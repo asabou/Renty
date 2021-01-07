@@ -1,8 +1,9 @@
 package com.mydegree.renty.resource;
 
 import com.mydegree.renty.service.IAdminService;
-import com.mydegree.renty.service.model.Role;
-import com.mydegree.renty.service.model.User;
+import com.mydegree.renty.service.model.RoleDTO;
+import com.mydegree.renty.service.model.UserDTO;
+import com.mydegree.renty.utils.ServicesUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class AdminController {
     }
 
     @PostMapping("/save-user")
-    private void saveUser(@RequestBody User user) {
+    private void saveUser(@RequestBody UserDTO user) {
         adminService.saveUser(user);
     }
 
@@ -33,13 +34,13 @@ public class AdminController {
     }
 
     @PostMapping("/update-role-for-user")
-    //TODO need to reconsider the set of roles that are sent from client
-    private void updateRoleForUser(@RequestParam(name = "username") String username, Set<Role> roles) {
-        adminService.updateRolesForUser(username, roles);
+    private void updateRoleForUser(@RequestParam(name = "username") String username, @RequestBody List<RoleDTO> roles) {
+        final Set<RoleDTO> setRoles = ServicesUtils.convertListToSet(roles);
+        adminService.updateRolesForUser(username, setRoles);
     }
 
     @GetMapping("/all-users")
-    private List<User> getAllUsers() {
+    private List<UserDTO> getAllUsers() {
         return adminService.findAllUsers();
     }
 }

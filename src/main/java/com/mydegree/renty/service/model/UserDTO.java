@@ -9,9 +9,9 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class User {
+public class UserDTO {
     private Long id;
     private String username;
     private String password;
-    private Set<Role> roles;
+    private Set<RoleDTO> roles;
 }

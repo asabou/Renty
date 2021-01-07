@@ -1,9 +1,11 @@
 package com.mydegree.renty.security;
 
+import com.mydegree.renty.jwt.CustomAuthenticationEntryPoint;
 import com.mydegree.renty.jwt.JwtConfig;
 import com.mydegree.renty.jwt.JwtTokenVerifierFilter;
 import com.mydegree.renty.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.mydegree.renty.service.ILoginService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -51,9 +53,14 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .antMatchers("/owner/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.PLACE_OWNER.name())
                 .antMatchers("/anon/**", "/h2-console/**").anonymous()
                 .anyRequest()
-                .authenticated();
+                .authenticated()
+                .and()
+                .logout();
         http
                 .headers().frameOptions().disable();
+        http
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint());
     }
 
     @Override
@@ -73,10 +80,15 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
     public WebMvcConfigurer configurer() {
         return new WebMvcConfigurer() {
             @Override
-            public void addCorsMappings(CorsRegistry registry) {
+            public void addCorsMappings(@NotNull CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedMethods("HEAD", "POST", "PUT", "DELETE", "PATCH", "GET");
             }
         };
+    }
+
+    @Bean
+    public CustomAuthenticationEntryPoint authenticationEntryPoint() {
+        return new CustomAuthenticationEntryPoint();
     }
 }

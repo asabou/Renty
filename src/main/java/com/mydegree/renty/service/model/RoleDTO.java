@@ -9,10 +9,10 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class Role {
+public class RoleDTO {
     private Long id;
     private String role;
-    public Role(String role) {
+    public RoleDTO(String role) {
         this.role = role;
     }
 }

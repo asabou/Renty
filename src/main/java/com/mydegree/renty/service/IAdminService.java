@@ -1,15 +1,15 @@
 package com.mydegree.renty.service;
 
-import com.mydegree.renty.service.model.Role;
-import com.mydegree.renty.service.model.User;
+import com.mydegree.renty.service.model.RoleDTO;
+import com.mydegree.renty.service.model.UserDTO;
 
 import java.util.List;
 import java.util.Set;
 
 public interface IAdminService {
-    void saveUser(final User user);
+    void saveUser(final UserDTO user);
     void deleteUserByUserName(final String username);
     void deleteUserByUserId(final Long id);
-    List<User> findAllUsers();
-    void updateRolesForUser(final String username, final Set<Role> roles);
+    List<UserDTO> findAllUsers();
+    void updateRolesForUser(final String username, final Set<RoleDTO> roles);
 }

@@ -1,39 +1,49 @@
 package com.mydegree.renty.service.helper;
 
 import com.mydegree.renty.dao.entity.RoleEntity;
-import com.mydegree.renty.service.model.Role;
+import com.mydegree.renty.service.model.RoleDTO;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class RoleTransformer {
-    public static Role transform(final RoleEntity input) {
-        final Role target = new Role();
+    private static void fillRole(final RoleEntity input, final RoleDTO target) {
         target.setId(input.getId());
         target.setRole(input.getRole());
+    }
+
+    private static void fillRoleEntity(final RoleDTO input, final RoleEntity target) {
+        target.setId(input.getId());
+        target.setRole(input.getRole());
+    }
+
+    public static RoleDTO transformRoles(final RoleEntity input) {
+        if (input == null) {
+            return null;
+        }
+        final RoleDTO target = new RoleDTO();
+        fillRole(input, target);
         return target;
     }
 
-    public static RoleEntity transform(final Role input) {
+    public static RoleEntity transformRoles(final RoleDTO input) {
+        if (input == null) {
+            return null;
+        }
         final RoleEntity target = new RoleEntity();
-        target.setId(input.getId());
-        target.setRole(input.getRole());
+        fillRoleEntity(input, target);
         return target;
     }
 
-    public static Set<RoleEntity> transform(final Set<Role> roles) {
-        final Set<RoleEntity> entities = new HashSet<>();
-        roles.forEach((role) -> {
-            entities.add(transform(role));
-        });
-        return entities;
+    public static Set<RoleEntity> transformRoles(final Set<RoleDTO> inputs) {
+        final Set<RoleEntity> targets = new HashSet<>();
+        inputs.forEach((role) -> targets.add(transformRoles(role)));
+        return targets;
     }
 
-    public static Set<Role> transformToDTO(final Set<RoleEntity> entities) {
-        final Set<Role> roles = new HashSet<>();
-        entities.forEach((entity) -> {
-            roles.add(transform(entity));
-        });
-        return roles;
+    public static Set<RoleDTO> transformRolesEntities(final Set<RoleEntity> inputs) {
+        final Set<RoleDTO> targets = new HashSet<>();
+        inputs.forEach((entity) -> targets.add(transformRoles(entity)));
+        return targets;
     }
 }

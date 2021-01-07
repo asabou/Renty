@@ -6,7 +6,6 @@ plugins {
 
 group = 'com.mydegree'
 version = '0.0.1'
-sourceCompatibility = '15'
 
 repositories {
 	mavenCentral()
@@ -17,6 +16,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.jetbrains:annotations:20.1.0'
 	compileOnly 'org.projectlombok:lombok'
 	compile group: 'com.h2database', name: 'h2', version: '1.4.200'
 	compile group: 'com.google.guava', name: 'guava', version: '28.1-jre'

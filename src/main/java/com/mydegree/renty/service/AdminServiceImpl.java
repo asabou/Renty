@@ -6,8 +6,8 @@ import com.mydegree.renty.exceptions.BadRequestException;
 import com.mydegree.renty.exceptions.NotFoundException;
 import com.mydegree.renty.service.helper.RoleTransformer;
 import com.mydegree.renty.service.helper.UserTransformer;
-import com.mydegree.renty.service.model.Role;
-import com.mydegree.renty.service.model.User;
+import com.mydegree.renty.service.model.RoleDTO;
+import com.mydegree.renty.service.model.UserDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public void saveUser(User user) {
+    public void saveUser(UserDTO user) {
         final UserEntity userEntity = userRepository.findUserByUsername(user.getUsername());
         if (userEntity != null) {
             throw new BadRequestException("This user already exists!");
@@ -50,18 +50,18 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public List<User> findAllUsers() {
+    public List<UserDTO> findAllUsers() {
         Iterable<UserEntity> all = userRepository.findAll();
         return UserTransformer.transform(all);
     }
 
     @Override
-    public void updateRolesForUser(String username, Set<Role> roles) {
+    public void updateRolesForUser(String username, Set<RoleDTO> roles) {
         UserEntity user = userRepository.findUserByUsername(username);
         if (user == null) {
             throw new NotFoundException("Cannot find user with username: " + username);
         }
-        user.setAuthorities(RoleTransformer.transform(roles));
+        user.setAuthorities(RoleTransformer.transformRoles(roles));
         userRepository.save(user);
     }
 }

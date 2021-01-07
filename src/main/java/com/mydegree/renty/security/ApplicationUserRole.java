@@ -1,7 +1,7 @@
 package com.mydegree.renty.security;
 
 import com.google.common.collect.Sets;
-import com.mydegree.renty.service.model.Role;
+import com.mydegree.renty.service.model.RoleDTO;
 import lombok.Getter;
 
 import java.util.Set;
@@ -22,11 +22,11 @@ public enum ApplicationUserRole {
         this.permissions = permissions;
     }
 
-    public Set<Role> getGrantedAuthorities() {
-        Set<Role> permissions = getPermissions().stream()
-                .map(permission -> new Role(permission.getPermission()))
+    public Set<RoleDTO> getGrantedAuthorities() {
+        Set<RoleDTO> permissions = getPermissions().stream()
+                .map(permission -> new RoleDTO(permission.getPermission()))
                 .collect(Collectors.toSet());
-        permissions.add(new Role("ROLE_" + this.name()));
+        permissions.add(new RoleDTO("ROLE_" + this.name()));
         return permissions;
     }
 }
