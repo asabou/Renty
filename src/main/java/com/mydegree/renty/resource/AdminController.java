@@ -20,7 +20,7 @@ public class AdminController {
 
     @PostMapping("/save-user")
     private void saveUser(@RequestBody UserDTO user) {
-        adminService.saveUser(user);
+        adminService.saveUserAdmin(user);
     }
 
     @DeleteMapping("/delete-user-by-id")

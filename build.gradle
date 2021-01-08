@@ -22,6 +22,7 @@ dependencies {
 	compile group: 'com.google.guava', name: 'guava', version: '28.1-jre'
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	compile group: 'org.json', name: 'json', version: '20180813'

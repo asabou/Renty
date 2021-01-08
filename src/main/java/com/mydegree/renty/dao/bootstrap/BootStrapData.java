@@ -32,24 +32,29 @@ public class BootStrapData implements CommandLineRunner {
     }
 
     private void saveRoles() {
-        final RoleEntity admin = new RoleEntity(), owner = new RoleEntity();
+        final RoleEntity admin = new RoleEntity(), owner = new RoleEntity(), renter = new RoleEntity();
         admin.setRole("ADMIN");
         owner.setRole("OWNER");
+        renter.setRole("RENTER");
         roleRepository.save(admin);
         roleRepository.save(owner);
+        roleRepository.save(renter);
     }
 
     private void saveUsers() {
-        final UserEntity alex = new UserEntity(), iulia = new UserEntity();
-        final UserDetailsEntity alexDetails = new UserDetailsEntity(), iuliaDetails = new UserDetailsEntity();
-
+        final UserEntity alex = new UserEntity(), iulia = new UserEntity(), lenuta = new UserEntity();
+        final UserDetailsEntity alexDetails = new UserDetailsEntity(), iuliaDetails = new UserDetailsEntity(),
+                lenutaDetails = new UserDetailsEntity();
         alex.setUserDetails(alexDetails);
         iulia.setUserDetails(iuliaDetails);
         alexDetails.setUser(alex);
         iuliaDetails.setUser(iulia);
+        lenuta.setUserDetails(lenutaDetails);
+        lenutaDetails.setUser(lenuta);
 
         final RoleEntity admin = roleRepository.findRoleEntityByRole("ADMIN");
         final RoleEntity owner = roleRepository.findRoleEntityByRole("OWNER");
+        final RoleEntity renter = roleRepository.findRoleEntityByRole("RENTER");
 
         alex.setUsername("alex");
         alex.setPassword(passwordEncoder.encode("password"));
@@ -70,14 +75,25 @@ public class BootStrapData implements CommandLineRunner {
         iuliaDetails.setLastName("Iulia");
         iuliaDetails.setTelNumber("0773300602");
 
+        lenuta.setUsername("lenuta");
+        lenuta.setPassword(passwordEncoder.encode("password"));
+        lenuta.getAuthorities().add(renter);
+
+        lenutaDetails.setEmail("lenuta@gmail.com");
+        lenutaDetails.setFirstName("Zaharia");
+        lenutaDetails.setLastName("Lenuta");
+        lenutaDetails.setTelNumber("0749665288");
+
         userRepository.save(alex);
         userDetailsRepository.save(alexDetails);
         userRepository.save(iulia);
         userDetailsRepository.save(iuliaDetails);
+        userRepository.save(lenuta);
+        userDetailsRepository.save(lenutaDetails);
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         //TODO I have to ask somebody which type of database (h2 or a real mysql db) should I use when active profile is test or dev
         if (activeProfile.equals("dev") || activeProfile.equals("test")) {
             saveRoles();

@@ -14,20 +14,13 @@ public class Base64Utils {
         return new String(bytes);
     }
 
-    public static String code(String string) {
+    public static String encode(String string) {
         return getEncoder().encodeToString(string.getBytes());
     }
 
-    public static String []getUsernameAndPasswordDecoded(String string) {
-        final String decodedString = decode(string);
-        return decodedString.split(":");
-    }
+    public static String getPassword(String string) { return string.split(":")[1]; }
 
-    public static String getPasswordDecoded(String string) {
-        return getUsernameAndPasswordDecoded(string)[1];
-    }
-
-    public static String getUsernameDecoded(String string) {
-        return getUsernameAndPasswordDecoded(string)[0];
+    public static String getUsername(String string) {
+        return string.split(":")[0];
     }
 }

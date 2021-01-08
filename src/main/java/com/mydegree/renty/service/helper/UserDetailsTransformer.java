@@ -9,7 +9,7 @@ import java.util.List;
 public class UserDetailsTransformer {
     private static void fillUserDetailsEntity(final UserDetailsDTO input, final UserDetailsEntity target) {
         target.setId(input.getId());
-        target.setUser(UserTransformer.transform(input.getUser()));
+        target.setUser(UserTransformer.transformUser(input.getUser()));
         target.setFirstName(input.getFirstName());
         target.setLastName(input.getLastName());
         target.setEmail(input.getEmail());
@@ -18,14 +18,14 @@ public class UserDetailsTransformer {
 
     private static void fillUserDetails(final UserDetailsEntity input, final UserDetailsDTO target) {
         target.setId(input.getId());
-        target.setUser(UserTransformer.transform(input.getUser()));
+        target.setUser(UserTransformer.transformUserEntity(input.getUser()));
         target.setFirstName(input.getFirstName());
         target.setLastName(input.getLastName());
         target.setEmail(input.getEmail());
         target.setTelNumber(input.getTelNumber());
     }
 
-    public static UserDetailsDTO transform(final UserDetailsEntity entity) {
+    public static UserDetailsDTO transformUserDetailsEntity(final UserDetailsEntity entity) {
         if (entity == null) {
             return null;
         }
@@ -34,7 +34,7 @@ public class UserDetailsTransformer {
         return userDetails;
     }
 
-    public static UserDetailsEntity transform(final UserDetailsDTO entity) {
+    public static UserDetailsEntity transformUserDetails(final UserDetailsDTO entity) {
         if (entity == null) {
             return null;
         }
@@ -45,13 +45,13 @@ public class UserDetailsTransformer {
 
     public static List<UserDetailsEntity> transformUsersDetails(final List<UserDetailsDTO> usersDetails) {
         final List<UserDetailsEntity> list = new ArrayList<>();
-        usersDetails.forEach((userDetails) -> list.add(transform(userDetails)));
+        usersDetails.forEach((userDetails) -> list.add(transformUserDetails(userDetails)));
         return list;
     }
 
     public static List<UserDetailsDTO> transformUsersDetailsEntities(final List<UserDetailsEntity> usersDetails) {
         final List<UserDetailsDTO> list = new ArrayList<>();
-        usersDetails.forEach((userDetails) -> list.add(transform(userDetails)));
+        usersDetails.forEach((userDetails) -> list.add(transformUserDetailsEntity(userDetails)));
         return list;
     }
 }

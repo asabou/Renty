@@ -1,6 +1,6 @@
 package com.mydegree.renty.security;
 
-import com.mydegree.renty.jwt.CustomAuthenticationEntryPoint;
+import com.mydegree.renty.jwt.CustomUnauthorizedEntryPoint;
 import com.mydegree.renty.jwt.JwtConfig;
 import com.mydegree.renty.jwt.JwtTokenVerifierFilter;
 import com.mydegree.renty.jwt.JwtUsernameAndPasswordAuthenticationFilter;
@@ -49,18 +49,19 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey))
                 .addFilterAfter(new JwtTokenVerifierFilter(jwtConfig, secretKey), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/admin/**", "/owner/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.ADMIN.name())
-                .antMatchers("/owner/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.PLACE_OWNER.name())
+                .antMatchers("/admin/**", "/owner/**", "/renter/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.ADMIN.name())
+                .antMatchers("/owner/**", "/renter/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.PLACE_OWNER.name())
+                .antMatchers("/renter/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.RENTER.name())
                 .antMatchers("/anon/**", "/h2-console/**").anonymous()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .logout();
         http
-                .headers().frameOptions().disable();
+                .headers().frameOptions().disable(); //for h2-console
         http
                 .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint());
+                .authenticationEntryPoint(authenticationEntryPoint()); //for unauthorized entry point
     }
 
     @Override
@@ -88,7 +89,7 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
     }
 
     @Bean
-    public CustomAuthenticationEntryPoint authenticationEntryPoint() {
-        return new CustomAuthenticationEntryPoint();
+    public CustomUnauthorizedEntryPoint authenticationEntryPoint() {
+        return new CustomUnauthorizedEntryPoint();
     }
 }

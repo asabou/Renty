@@ -1,8 +1,8 @@
 package com.mydegree.renty.jwt;
 
 import com.mydegree.renty.utils.Base64Utils;
+import com.mydegree.renty.utils.ServicesUtils;
 import io.jsonwebtoken.Jwts;
-import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,7 +12,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.crypto.SecretKey;
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -35,9 +34,10 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         final String authHeader = request.getHeader("Authorization");
+        final String authStringDecoded = Base64Utils.decode(authHeader);
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-                Base64Utils.getUsernameDecoded(authHeader),
-                Base64Utils.getPasswordDecoded(authHeader)
+                Base64Utils.getUsername(authStringDecoded),
+                Base64Utils.getPassword(authStringDecoded)
         );
         return authenticationManager.authenticate(authentication);
     }
@@ -61,6 +61,6 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-       response.getWriter().write((new JSONObject().put("message", "Login failed! Username or password incorrect!")).toString());
+       response.getWriter().write(ServicesUtils.transformToJSONError("Login failed! Username or password incorrect!"));
     }
 }
