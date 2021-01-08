@@ -15,9 +15,11 @@ import com.mydegree.renty.service.model.UserDTO;
 import com.mydegree.renty.service.model.UserDetailsDTO;
 import com.mydegree.renty.utils.Base64Utils;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class UserServiceImpl implements IUserService {
     private final IUserDetailsRepository userDetailsRepository;
     private final IUserRepository userRepository;
@@ -39,7 +41,7 @@ public class UserServiceImpl implements IUserService {
      * When a user is created by anonymous user, then the default role will be RENTER role with the corresponding permissions
      */
     @Override
-    public void saveUserByAnonUser(UserDetailsDTO userDetails) {
+    public void saveUserAnon(UserDetailsDTO userDetails) {
         final UserDTO userDTO = userDetails.getUser();
         final String username = userDTO.getUsername();
         final UserEntity userEntity = userRepository.findUserByUsername(username);

@@ -61,7 +61,7 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .headers().frameOptions().disable(); //for h2-console
         http
                 .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint()); //for unauthorized entry point
+                .authenticationEntryPoint(unauthorizedEntryPoint()); //for unauthorized entry point
     }
 
     @Override
@@ -89,7 +89,7 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
     }
 
     @Bean
-    public CustomUnauthorizedEntryPoint authenticationEntryPoint() {
+    public CustomUnauthorizedEntryPoint unauthorizedEntryPoint() {
         return new CustomUnauthorizedEntryPoint();
     }
 }

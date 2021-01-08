@@ -3,6 +3,7 @@ package com.mydegree.renty.resource;
 import com.mydegree.renty.service.IAdminService;
 import com.mydegree.renty.service.model.RoleDTO;
 import com.mydegree.renty.service.model.UserDTO;
+import com.mydegree.renty.service.model.UserDetailsDTO;
 import com.mydegree.renty.utils.ServicesUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,24 +13,29 @@ import java.util.Set;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
-    public IAdminService adminService;
+    private final IAdminService adminService;
 
     public AdminController(IAdminService adminService) {
         this.adminService = adminService;
     }
 
-    @PostMapping("/save-user")
-    private void saveUser(@RequestBody UserDTO user) {
-        adminService.saveUserAdmin(user);
+    @PostMapping("/create-user-admin")
+    private void saveUserAdmin(@RequestBody UserDTO userDTO) {
+        adminService.saveUserAdmin(userDTO);
+    }
+
+    @PostMapping("/create-user-owner")
+    private void saveUserOwner(@RequestBody UserDetailsDTO userDetailsDTO) {
+        adminService.saveUserOwner(userDetailsDTO);
     }
 
     @DeleteMapping("/delete-user-by-id")
-    private void deleteUserWithId(@RequestParam(name = "id") Long id) {
+    private void deleteUserById(@RequestParam(name = "id") Long id) {
         adminService.deleteUserByUserId(id);
     }
 
     @DeleteMapping("/delete-user-by-username")
-    private void deleteUserWithUsername(@RequestParam(name = "username") String username) {
+    private void deleteUserByUsername(@RequestParam(name = "username") String username) {
         adminService.deleteUserByUserName(username);
     }
 
