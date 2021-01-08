@@ -60,10 +60,16 @@ public class BootStrapData implements CommandLineRunner {
         alex.setPassword(passwordEncoder.encode("password"));
         alex.getAuthorities().add(admin);
         alex.getAuthorities().add(owner);
+        alex.getAuthorities().add(renter);
 
         iulia.setUsername("iulia");
         iulia.setPassword(passwordEncoder.encode("password"));
         iulia.getAuthorities().add(owner);
+        iulia.getAuthorities().add(renter);
+
+        lenuta.setUsername("lenuta");
+        lenuta.setPassword(passwordEncoder.encode("password"));
+        lenuta.getAuthorities().add(renter);
 
         alexDetails.setEmail("alexmihai906@gmail.com");
         alexDetails.setFirstName("Sabou");
@@ -74,10 +80,6 @@ public class BootStrapData implements CommandLineRunner {
         iuliaDetails.setFirstName("Muresan");
         iuliaDetails.setLastName("Iulia");
         iuliaDetails.setTelNumber("0773300602");
-
-        lenuta.setUsername("lenuta");
-        lenuta.setPassword(passwordEncoder.encode("password"));
-        lenuta.getAuthorities().add(renter);
 
         lenutaDetails.setEmail("lenuta@gmail.com");
         lenutaDetails.setFirstName("Zaharia");
