@@ -1,6 +1,6 @@
 package com.mydegree.renty.resource;
 
-import com.mydegree.renty.service.IAdminService;
+import com.mydegree.renty.service.AdminServiceImpl;
 import com.mydegree.renty.service.model.RoleDTO;
 import com.mydegree.renty.service.model.UserDTO;
 import com.mydegree.renty.service.model.UserDetailsDTO;
@@ -13,30 +13,30 @@ import java.util.Set;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
-    private final IAdminService adminService;
+    private final AdminServiceImpl adminService;
 
-    public AdminController(IAdminService adminService) {
+    public AdminController(AdminServiceImpl adminService) {
         this.adminService = adminService;
     }
 
     @PostMapping("/create-user-admin")
-    private void saveUserAdmin(@RequestBody UserDTO userDTO) {
+    private void createAdminAccount(@RequestBody UserDTO userDTO) {
         adminService.saveUserAdmin(userDTO);
     }
 
     @PostMapping("/create-user-owner")
-    private void saveUserOwner(@RequestBody UserDetailsDTO userDetailsDTO) {
+    private void createOwnerAccount(@RequestBody UserDetailsDTO userDetailsDTO) {
         adminService.saveUserOwner(userDetailsDTO);
     }
 
-    @DeleteMapping("/delete-user-by-id")
-    private void deleteUserById(@RequestParam(name = "id") Long id) {
-        adminService.deleteUserByUserId(id);
+    @DeleteMapping("/delete-account-by-id")
+    private void deleteAccount(@RequestParam(name = "id") Long id) {
+        adminService.deleteUserById(id);
     }
 
-    @DeleteMapping("/delete-user-by-username")
-    private void deleteUserByUsername(@RequestParam(name = "username") String username) {
-        adminService.deleteUserByUserName(username);
+    @DeleteMapping("/delete-account-by-username")
+    private void deleteAccount(@RequestParam(name = "username") String username) {
+        adminService.deleteUserByUsername(username);
     }
 
     @PostMapping("/update-role-for-user")

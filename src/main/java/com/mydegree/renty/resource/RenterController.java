@@ -1,15 +1,15 @@
 package com.mydegree.renty.resource;
 
-import com.mydegree.renty.service.IUserService;
+import com.mydegree.renty.service.UserServiceImpl;
 import com.mydegree.renty.service.model.UserDetailsDTO;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/renter")
 public class RenterController {
-    private final IUserService userService;
+    private final UserServiceImpl userService;
 
-    public RenterController(IUserService userService) {
+    public RenterController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
@@ -23,9 +23,12 @@ public class RenterController {
         return userService.updateUser(userDetailsDTO);
     }
 
-    @DeleteMapping("/delete-account")
+    @DeleteMapping("/delete-account-by-id")
     private void deleteAccount(@RequestParam(name = "id") Long id) {
-        userService.deleteUser(id);
+        userService.deleteUserById(id);
     }
+
+    @DeleteMapping("/delete-account-by-username")
+    private void deleteAccount(@RequestParam(name = "username") String username) { userService.deleteUserByUsername(username);}
 
 }

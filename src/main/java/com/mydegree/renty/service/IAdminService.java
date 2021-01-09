@@ -10,8 +10,6 @@ import java.util.Set;
 public interface IAdminService {
     void saveUserOwner(final UserDetailsDTO userDetails);
     void saveUserAdmin(final UserDTO user);
-    void deleteUserByUserName(final String username);
-    void deleteUserByUserId(final Long id);
     List<UserDTO> findAllUsers();
     void updateRolesForUser(final String username, final Set<RoleDTO> roles);
 }

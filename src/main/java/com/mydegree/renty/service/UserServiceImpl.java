@@ -20,9 +20,8 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl extends AbstractServiceImpl implements IUserService {
     private final IUserDetailsRepository userDetailsRepository;
-    private final IUserRepository userRepository;
     private final IRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -30,8 +29,8 @@ public class UserServiceImpl implements IUserService {
                            IUserRepository userRepository,
                            IRoleRepository roleRepository,
                            PasswordEncoder passwordEncoder) {
+        super(userRepository);
         this.userDetailsRepository = userDetailsRepository;
-        this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -76,14 +75,5 @@ public class UserServiceImpl implements IUserService {
         }
         final UserDetailsEntity userDetailsEntity = userDetailsRepository.save(UserDetailsTransformer.transformUserDetails(userDetails));
         return UserDetailsTransformer.transformUserDetailsEntity(userDetailsEntity);
-    }
-
-    @Override
-    public void deleteUser(Long id) {
-        final Optional<UserDetailsEntity> userOptional = userDetailsRepository.findById(id);
-        if (userOptional.isEmpty()) {
-            throw new NotFoundException("Cannot find user with id: " + id);
-        }
-        userDetailsRepository.delete(userOptional.get());
     }
 }

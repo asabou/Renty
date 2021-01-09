@@ -17,7 +17,7 @@ public class AnonController {
     }
 
     @PostMapping("/create-account")
-    private void saveUserByAnonUser(@RequestBody UserDetailsDTO userDetailsDTO) {
+    private void saveUserAnon(@RequestBody UserDetailsDTO userDetailsDTO) {
         userService.saveUserAnon(userDetailsDTO);
     }
 

@@ -20,12 +20,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class AdminServiceImpl implements IAdminService {
-    private final IUserRepository userRepository;
+public class AdminServiceImpl extends AbstractServiceImpl implements IAdminService {
     private final IUserDetailsRepository userDetailsRepository;
     private final PasswordEncoder passwordEncoder;
     private final IRoleRepository roleRepository;
@@ -34,7 +32,7 @@ public class AdminServiceImpl implements IAdminService {
                             IUserDetailsRepository userDetailsRepository,
                             PasswordEncoder passwordEncoder,
                             IRoleRepository roleRepository) {
-        this.userRepository = userRepository;
+        super(userRepository);
         this.userDetailsRepository = userDetailsRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
@@ -72,24 +70,6 @@ public class AdminServiceImpl implements IAdminService {
             throw new BadRequestException("This user already exists!");
         }
         userRepository.save(UserTransformer.transformUser(user));
-    }
-
-    @Override
-    public void deleteUserByUserName(String username) {
-        final UserEntity user = userRepository.findUserByUsername(username);
-        if (user == null) {
-            throw new NotFoundException("Cannot find user with username: " + username);
-        }
-        userRepository.deleteById(user.getId());
-    }
-
-    @Override
-    public void deleteUserByUserId(Long id) {
-        final Optional<UserEntity> userOptional = userRepository.findById(id);
-        if (userOptional.isEmpty()) {
-            throw new NotFoundException("Cannot find user with id: " + id);
-        }
-        userRepository.deleteById(id);
     }
 
     @Override
