@@ -1,4 +1,4 @@
-package com.mydegree.renty.service;
+package com.mydegree.renty.service.impl;
 
 import com.mydegree.renty.dao.entity.RoleEntity;
 import com.mydegree.renty.dao.entity.UserDetailsEntity;
@@ -9,6 +9,8 @@ import com.mydegree.renty.dao.repository.IUserRepository;
 import com.mydegree.renty.exceptions.BadRequestException;
 import com.mydegree.renty.exceptions.InternalServerError;
 import com.mydegree.renty.exceptions.NotFoundException;
+import com.mydegree.renty.service.abstracts.AbstractService;
+import com.mydegree.renty.service.abstracts.IUserService;
 import com.mydegree.renty.service.helper.UserDetailsTransformer;
 import com.mydegree.renty.service.helper.UserTransformer;
 import com.mydegree.renty.service.model.UserDTO;
@@ -20,7 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl extends AbstractServiceImpl implements IUserService {
+public class UserServiceImpl extends AbstractService implements IUserService {
     private final IUserDetailsRepository userDetailsRepository;
     private final IRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;

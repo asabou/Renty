@@ -40,13 +40,17 @@ public class UserTransformer {
 
     public static List<UserEntity> transformUsers(final List<UserDTO> inputs) {
         final List<UserEntity> targets = new ArrayList<>();
-        inputs.forEach((user) -> targets.add(transformUser(user)));
+        if (inputs != null) {
+            inputs.forEach((user) -> targets.add(transformUser(user)));
+        }
         return targets;
     }
 
     public static List<UserDTO> transformUserEntities(final Iterable<UserEntity> entities) {
         final List<UserDTO> users = new ArrayList<>();
-        entities.forEach((entity) -> users.add(transformUserEntity(entity)));
+        if (entities != null) {
+            entities.forEach((entity) -> users.add(transformUserEntity(entity)));
+        }
         return users;
     }
 }

@@ -1,6 +1,6 @@
 package com.mydegree.renty.resource;
 
-import com.mydegree.renty.service.UserServiceImpl;
+import com.mydegree.renty.service.impl.UserServiceImpl;
 import com.mydegree.renty.service.model.UserDetailsDTO;
 import org.springframework.web.bind.annotation.*;
 

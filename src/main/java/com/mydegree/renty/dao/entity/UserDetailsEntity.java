@@ -3,6 +3,8 @@ package com.mydegree.renty.dao.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -30,4 +32,7 @@ public class UserDetailsEntity {
 
     @Column(name = "tel_number")
     private String telNumber;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userDetails")
+    private Set<EntertainmentPlaceEntity> entertainmentPlaces = new HashSet<>();
 }

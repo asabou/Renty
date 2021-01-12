@@ -37,13 +37,17 @@ public class RoleTransformer {
 
     public static Set<RoleEntity> transformRoles(final Set<RoleDTO> inputs) {
         final Set<RoleEntity> targets = new HashSet<>();
-        inputs.forEach((role) -> targets.add(transformRole(role)));
+        if (inputs != null) {
+            inputs.forEach((role) -> targets.add(transformRole(role)));
+        }
         return targets;
     }
 
     public static Set<RoleDTO> transformRoleEntities(final Set<RoleEntity> inputs) {
         final Set<RoleDTO> targets = new HashSet<>();
-        inputs.forEach((entity) -> targets.add(transformRoleEntity(entity)));
+        if (inputs != null) {
+            inputs.forEach((entity) -> targets.add(transformRoleEntity(entity)));
+        }
         return targets;
     }
 }

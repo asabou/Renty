@@ -2,6 +2,7 @@ package com.mydegree.renty.service;
 
 import com.mydegree.renty.dao.entity.UserEntity;
 import com.mydegree.renty.dao.repository.IUserRepository;
+import com.mydegree.renty.service.impl.LoginServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

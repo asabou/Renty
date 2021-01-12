@@ -1,10 +1,7 @@
 package com.mydegree.renty.security;
 
-import com.mydegree.renty.jwt.CustomUnauthorizedEntryPoint;
-import com.mydegree.renty.jwt.JwtConfig;
-import com.mydegree.renty.jwt.JwtTokenVerifierFilter;
-import com.mydegree.renty.jwt.JwtUsernameAndPasswordAuthenticationFilter;
-import com.mydegree.renty.service.ILoginService;
+import com.mydegree.renty.jwt.*;
+import com.mydegree.renty.service.abstracts.ILoginService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,8 +47,10 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .addFilterAfter(new JwtTokenVerifierFilter(jwtConfig, secretKey), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/admin/**", "/owner/**", "/renter/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.ADMIN.name())
-                .antMatchers("/owner/**", "/renter/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.PLACE_OWNER.name())
-                .antMatchers("/renter/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.RENTER.name())
+                .antMatchers("/owner/**", "/renter/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.PLACE_OWNER.name(), ApplicationUserRole.ADMIN.name())
+                .antMatchers("/renter/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.RENTER.name(),
+                                                                                    ApplicationUserRole.ADMIN.name(),
+                                                                                    ApplicationUserRole.RENTER.name())
                 .antMatchers("/anon/**", "/h2-console/**").anonymous()
                 .anyRequest()
                 .authenticated()
@@ -61,7 +60,8 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .headers().frameOptions().disable(); //for h2-console
         http
                 .exceptionHandling()
-                .authenticationEntryPoint(unauthorizedEntryPoint()); //for unauthorized entry point
+                .authenticationEntryPoint(unauthorizedEntryPointHandler()) //for unauthorized entry point (error 401)
+                .accessDeniedHandler(accessDeniedHandler()); //for access denied entry point (error 403)
     }
 
     @Override
@@ -89,7 +89,12 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
     }
 
     @Bean
-    public CustomUnauthorizedEntryPoint unauthorizedEntryPoint() {
-        return new CustomUnauthorizedEntryPoint();
+    public CustomUnauthorizedEntryPointHandler unauthorizedEntryPointHandler() {
+        return new CustomUnauthorizedEntryPointHandler();
+    }
+
+    @Bean
+    public CustomAccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
     }
 }

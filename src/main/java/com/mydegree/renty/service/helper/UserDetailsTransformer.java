@@ -45,13 +45,17 @@ public class UserDetailsTransformer {
 
     public static List<UserDetailsEntity> transformUsersDetails(final List<UserDetailsDTO> usersDetails) {
         final List<UserDetailsEntity> list = new ArrayList<>();
-        usersDetails.forEach((userDetails) -> list.add(transformUserDetails(userDetails)));
+        if (usersDetails != null) {
+            usersDetails.forEach((userDetails) -> list.add(transformUserDetails(userDetails)));
+        }
         return list;
     }
 
     public static List<UserDetailsDTO> transformUsersDetailsEntities(final List<UserDetailsEntity> usersDetails) {
         final List<UserDetailsDTO> list = new ArrayList<>();
-        usersDetails.forEach((userDetails) -> list.add(transformUserDetailsEntity(userDetails)));
+        if (usersDetails != null) {
+            usersDetails.forEach((userDetails) -> list.add(transformUserDetailsEntity(userDetails)));
+        }
         return list;
     }
 }

@@ -1,4 +1,4 @@
-package com.mydegree.renty.service;
+package com.mydegree.renty.service.abstracts;
 
 import com.mydegree.renty.service.model.RoleDTO;
 import com.mydegree.renty.service.model.UserDTO;

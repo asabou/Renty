@@ -1,4 +1,4 @@
-package com.mydegree.renty.service;
+package com.mydegree.renty.service.abstracts;
 
 public interface IAbstractService {
     void deleteUserByUsername(final String username);

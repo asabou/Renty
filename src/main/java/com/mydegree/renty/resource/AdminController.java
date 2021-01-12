@@ -1,6 +1,8 @@
 package com.mydegree.renty.resource;
 
-import com.mydegree.renty.service.AdminServiceImpl;
+import com.mydegree.renty.service.abstracts.IEntertainmentActivityService;
+import com.mydegree.renty.service.impl.AdminServiceImpl;
+import com.mydegree.renty.service.model.EntertainmentActivityDTO;
 import com.mydegree.renty.service.model.RoleDTO;
 import com.mydegree.renty.service.model.UserDTO;
 import com.mydegree.renty.service.model.UserDetailsDTO;
@@ -14,9 +16,11 @@ import java.util.Set;
 @RequestMapping("/admin")
 public class AdminController {
     private final AdminServiceImpl adminService;
+    private final IEntertainmentActivityService entertainmentActivityService;
 
-    public AdminController(AdminServiceImpl adminService) {
+    public AdminController(AdminServiceImpl adminService, IEntertainmentActivityService entertainmentActivityService) {
         this.adminService = adminService;
+        this.entertainmentActivityService = entertainmentActivityService;
     }
 
     @PostMapping("/create-user-admin")
@@ -48,5 +52,10 @@ public class AdminController {
     @GetMapping("/all-users")
     private List<UserDTO> getAllUsers() {
         return adminService.findAllUsers();
+    }
+
+    @PostMapping("/create-entertainment-activity")
+    private void createEntertainmentActivity(@RequestBody EntertainmentActivityDTO entertainmentActivityDTO) {
+        entertainmentActivityService.saveEntertainmentActivity(entertainmentActivityDTO);
     }
 }

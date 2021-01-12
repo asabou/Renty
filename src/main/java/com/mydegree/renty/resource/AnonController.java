@@ -1,6 +1,6 @@
 package com.mydegree.renty.resource;
 
-import com.mydegree.renty.service.IUserService;
+import com.mydegree.renty.service.abstracts.IUserService;
 import com.mydegree.renty.service.model.UserDetailsDTO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -1,4 +1,4 @@
-package com.mydegree.renty.service;
+package com.mydegree.renty.service.impl;
 
 import com.google.common.collect.Sets;
 import com.mydegree.renty.dao.entity.RoleEntity;
@@ -9,6 +9,8 @@ import com.mydegree.renty.dao.repository.IUserRepository;
 import com.mydegree.renty.exceptions.BadRequestException;
 import com.mydegree.renty.exceptions.InternalServerError;
 import com.mydegree.renty.exceptions.NotFoundException;
+import com.mydegree.renty.service.abstracts.AbstractService;
+import com.mydegree.renty.service.abstracts.IAdminService;
 import com.mydegree.renty.service.helper.RoleTransformer;
 import com.mydegree.renty.service.helper.UserDetailsTransformer;
 import com.mydegree.renty.service.helper.UserTransformer;
@@ -23,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class AdminServiceImpl extends AbstractServiceImpl implements IAdminService {
+public class AdminServiceImpl extends AbstractService implements IAdminService {
     private final IUserDetailsRepository userDetailsRepository;
     private final PasswordEncoder passwordEncoder;
     private final IRoleRepository roleRepository;
@@ -40,7 +42,7 @@ public class AdminServiceImpl extends AbstractServiceImpl implements IAdminServi
 
     /**
      * @param userDetails User to be created
-     * When an owner user is created, then he will have OWNER and RENTER roles with the corresponding permissions
+     *                    When an owner user is created, then he will have OWNER and RENTER roles with the corresponding permissions
      */
     @Override
     public void saveUserOwner(UserDetailsDTO userDetails) {

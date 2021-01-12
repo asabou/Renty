@@ -1,6 +1,7 @@
-package com.mydegree.renty.service;
+package com.mydegree.renty.service.impl;
 
 import com.mydegree.renty.dao.repository.IUserRepository;
+import com.mydegree.renty.service.abstracts.ILoginService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

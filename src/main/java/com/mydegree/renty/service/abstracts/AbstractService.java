@@ -1,17 +1,18 @@
-package com.mydegree.renty.service;
+package com.mydegree.renty.service.abstracts;
 
 import com.mydegree.renty.dao.entity.UserEntity;
 import com.mydegree.renty.dao.repository.IUserRepository;
 import com.mydegree.renty.exceptions.NotFoundException;
+import com.mydegree.renty.service.abstracts.IAbstractService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public abstract class AbstractServiceImpl implements IAbstractService {
+public abstract class AbstractService implements IAbstractService {
     protected final IUserRepository userRepository;
 
-    public AbstractServiceImpl(IUserRepository userRepository) {
+    public AbstractService(IUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
