@@ -1,9 +1,12 @@
 package com.mydegree.renty.resource;
 
 import com.mydegree.renty.service.abstracts.IEntertainmentPlaceService;
+import com.mydegree.renty.service.model.EntertainmentPlaceDTO;
 import com.mydegree.renty.service.model.EntertainmentPlaceInputDTO;
 import com.mydegree.renty.service.impl.UserServiceImpl;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/owner")
@@ -37,5 +40,10 @@ public class OwnerController {
     @PostMapping("/create-entertainment-place")
     private void createEntertainmentPlace(@RequestBody EntertainmentPlaceInputDTO entertainmentPlace) {
         entertainmentPlaceService.saveEntertainmentPlace(entertainmentPlace);
+    }
+
+    @GetMapping("/all-owned-entertainment-places")
+    private List<EntertainmentPlaceDTO> getAllOwnedEntertainmentPlaces(@RequestParam(name = "id") Long id) {
+        return entertainmentPlaceService.findAllEntertainmentPlacesForAnOwnerId(id);
     }
 }

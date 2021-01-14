@@ -26,5 +26,8 @@ public class ReservationEntity {
     private Timestamp reservationDate;
 
     @Column(name = "reservation_hour")
-    private Time reservationHour;
+    private Integer reservationHour;
+
+    @OneToOne(targetEntity = UserDetailsEntity.class, fetch = FetchType.LAZY)
+    private UserDetailsEntity userDetails;
 }

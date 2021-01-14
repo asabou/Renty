@@ -1,8 +1,10 @@
 package com.mydegree.renty.service.impl;
 
 import com.google.common.collect.Sets;
+import com.mydegree.renty.dao.entity.EntertainmentActivityEntity;
 import com.mydegree.renty.dao.entity.RoleEntity;
 import com.mydegree.renty.dao.entity.UserEntity;
+import com.mydegree.renty.dao.repository.IEntertainmentActivityRepository;
 import com.mydegree.renty.dao.repository.IRoleRepository;
 import com.mydegree.renty.dao.repository.IUserDetailsRepository;
 import com.mydegree.renty.dao.repository.IUserRepository;
@@ -11,9 +13,11 @@ import com.mydegree.renty.exceptions.InternalServerError;
 import com.mydegree.renty.exceptions.NotFoundException;
 import com.mydegree.renty.service.abstracts.AbstractService;
 import com.mydegree.renty.service.abstracts.IAdminService;
+import com.mydegree.renty.service.helper.EntertainmentActivityTransformer;
 import com.mydegree.renty.service.helper.RoleTransformer;
 import com.mydegree.renty.service.helper.UserDetailsTransformer;
 import com.mydegree.renty.service.helper.UserTransformer;
+import com.mydegree.renty.service.model.EntertainmentActivityDTO;
 import com.mydegree.renty.service.model.RoleDTO;
 import com.mydegree.renty.service.model.UserDTO;
 import com.mydegree.renty.service.model.UserDetailsDTO;
@@ -29,15 +33,18 @@ public class AdminServiceImpl extends AbstractService implements IAdminService {
     private final IUserDetailsRepository userDetailsRepository;
     private final PasswordEncoder passwordEncoder;
     private final IRoleRepository roleRepository;
+    private final IEntertainmentActivityRepository entertainmentActivityRepository;
 
     public AdminServiceImpl(IUserRepository userRepository,
                             IUserDetailsRepository userDetailsRepository,
                             PasswordEncoder passwordEncoder,
-                            IRoleRepository roleRepository) {
+                            IRoleRepository roleRepository,
+                            IEntertainmentActivityRepository entertainmentActivityRepository) {
         super(userRepository);
         this.userDetailsRepository = userDetailsRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.entertainmentActivityRepository = entertainmentActivityRepository;
     }
 
     /**
@@ -88,5 +95,15 @@ public class AdminServiceImpl extends AbstractService implements IAdminService {
         }
         user.setAuthorities(RoleTransformer.transformRoles(roles));
         userRepository.save(user);
+    }
+
+    @Override
+    public void saveEntertainmentActivity(EntertainmentActivityDTO entertainmentActivity) {
+        EntertainmentActivityEntity activity = entertainmentActivityRepository.findEntertainmentActivityEntityByName(entertainmentActivity.getName());
+        if (activity != null) {
+            throw new BadRequestException("Activity " + entertainmentActivity.getName() + " already exists!");
+        }
+        final EntertainmentActivityEntity entityToSave = EntertainmentActivityTransformer.transformEntertainmentActivity(entertainmentActivity);
+        entertainmentActivityRepository.save(entityToSave);
     }
 }
