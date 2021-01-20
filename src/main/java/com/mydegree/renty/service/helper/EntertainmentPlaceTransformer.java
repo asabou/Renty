@@ -1,6 +1,5 @@
 package com.mydegree.renty.service.helper;
 
-import com.mydegree.renty.dao.entity.EntertainmentActivityEntity;
 import com.mydegree.renty.dao.entity.EntertainmentPlaceEntity;
 import com.mydegree.renty.service.model.EntertainmentPlaceDTO;
 

@@ -14,6 +14,6 @@ public class CustomUnauthorizedEntryPointHandler implements AuthenticationEntryP
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.getWriter().write(ServicesUtils.transformToJSONError("Access denied! Invalid token authentication!"));
+        response.getWriter().write("Access denied! Invalid token authentication!");
     }
 }

@@ -1,10 +1,10 @@
 package com.mydegree.renty.resource;
 
+import com.mydegree.renty.service.abstracts.IEntertainmentActivityService;
+import com.mydegree.renty.service.abstracts.IEntertainmentPlaceService;
 import com.mydegree.renty.service.abstracts.IReservationService;
 import com.mydegree.renty.service.impl.UserServiceImpl;
-import com.mydegree.renty.service.model.ReservationInputDTO;
-import com.mydegree.renty.service.model.ReservationOutputDTO;
-import com.mydegree.renty.service.model.UserDetailsDTO;
+import com.mydegree.renty.service.model.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,29 +14,36 @@ import java.util.List;
 public class RenterController {
     private final UserServiceImpl userService;
     private final IReservationService reservationService;
+    private final IEntertainmentPlaceService entertainmentPlaceService;
+    private final IEntertainmentActivityService entertainmentActivityService;
 
-    public RenterController(UserServiceImpl userService, IReservationService reservationService) {
+    public RenterController(UserServiceImpl userService, IReservationService reservationService, IEntertainmentPlaceService entertainmentPlaceService, IEntertainmentActivityService entertainmentActivityService) {
         this.userService = userService;
         this.reservationService = reservationService;
+        this.entertainmentPlaceService = entertainmentPlaceService;
+        this.entertainmentActivityService = entertainmentActivityService;
     }
 
     @GetMapping("/find-user-by-id")
     private UserDetailsDTO findUserDetailsByUserId(@RequestParam(name = "id") Long id) {
-        return userService.findUserDetailsById(id);
+        return userService.findUserByUserId(id);
     }
 
     @PutMapping("/update-user-details")
-    private UserDetailsDTO updateUser(@RequestBody UserDetailsDTO userDetailsDTO) {
-        return userService.updateUser(userDetailsDTO);
+    private void updateUser(@RequestBody UserDetailsDTO userDetailsDTO) {
+        userService.updateUser(userDetailsDTO);
     }
 
-    @DeleteMapping("/delete-account-by-id")
-    private void deleteAccount(@RequestParam(name = "id") Long id) {
-        userService.deleteUserById(id);
+    @DeleteMapping("/delete-account")
+    private void deleteAccount(@RequestHeader(name = "Authorization") String authorization) {
+        final String token = authorization.split(" ")[1];
+        userService.deleteAccount(token);
     }
 
-    @DeleteMapping("/delete-account-by-username")
-    private void deleteAccount(@RequestParam(name = "username") String username) { userService.deleteUserByUsername(username);}
+    @PutMapping("/update-account")
+    private void updateAccount(@RequestBody UserDetailsDTO userDetails) {
+        userService.updateAccount(userDetails);
+    }
 
     @PostMapping("/create-reservation")
     private void createReservation(@RequestBody ReservationInputDTO reservationInputDTO) {
@@ -51,5 +58,20 @@ public class RenterController {
     @GetMapping("/all-active-reservations")
     private List<ReservationOutputDTO> findAllActiveReservations(@RequestParam(name = "id") Long id) {
         return reservationService.findAllActiveReservationsByUserId(id);
+    }
+
+    @GetMapping("/search-entertainment-place")
+    private List<EntertainmentPlaceDTO> searchEntertainmentPlace(@RequestParam(name = "filter") String filter) {
+        return entertainmentPlaceService.findAllEntertainmentPlacesByAddressOrNameOrDescriptionOrUserDetailsFirstNameOrUserDetailsLastName(filter);
+    }
+
+    @PutMapping("/reset-password")
+    private void resetPassword(@RequestBody UserDTO userDTO) {
+        userService.resetPassword(userDTO);
+    }
+
+    @GetMapping("/get-entertainment-activities-for-place")
+    private List<EntertainmentActivityDTO> findEntertainmentActivitiesForPlace(@RequestParam(name = "id") Long id) {
+        return entertainmentActivityService.findEntertainmentActivitiesByEntertainmentPlaceId(id);
     }
 }

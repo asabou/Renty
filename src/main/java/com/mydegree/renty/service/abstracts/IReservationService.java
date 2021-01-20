@@ -1,5 +1,7 @@
 package com.mydegree.renty.service.abstracts;
 
+import com.mydegree.renty.dao.entity.EntertainmentActivityPlaceId;
+import com.mydegree.renty.service.model.EntertainmentActivityPlaceIdDTO;
 import com.mydegree.renty.service.model.ReservationInputDTO;
 import com.mydegree.renty.service.model.ReservationOutputDTO;
 
@@ -11,4 +13,5 @@ public interface IReservationService {
     List<ReservationOutputDTO> findAllActiveReservationsByUserId(final Long id);
     List<ReservationOutputDTO> findAllReservations();
     List<ReservationOutputDTO> findAllActiveReservations();
+    List<ReservationOutputDTO> findAllActiveReservationsByEntertainmentActivityPlace(final EntertainmentActivityPlaceIdDTO entertainmentActivityPlaceId);
 }

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public enum ApplicationUserRole {
     RENTER(Sets.newHashSet(ApplicationUserPermission.RENTER_READ,
             ApplicationUserPermission.RENTER_WRITE)),
-    PLACE_OWNER(Sets.newHashSet(ApplicationUserPermission.OWNER_READ,
+    OWNER(Sets.newHashSet(ApplicationUserPermission.OWNER_READ,
             ApplicationUserPermission.OWNER_WRITE,
             ApplicationUserPermission.RENTER_READ,
             ApplicationUserPermission.RENTER_WRITE)),

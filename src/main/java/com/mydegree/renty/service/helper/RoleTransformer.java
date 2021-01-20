@@ -3,7 +3,9 @@ package com.mydegree.renty.service.helper;
 import com.mydegree.renty.dao.entity.RoleEntity;
 import com.mydegree.renty.service.model.RoleDTO;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class RoleTransformer {
@@ -45,6 +47,14 @@ public class RoleTransformer {
 
     public static Set<RoleDTO> transformRoleEntities(final Set<RoleEntity> inputs) {
         final Set<RoleDTO> targets = new HashSet<>();
+        if (inputs != null) {
+            inputs.forEach((entity) -> targets.add(transformRoleEntity(entity)));
+        }
+        return targets;
+    }
+
+    public static List<RoleDTO> transformRoleEntities(final Iterable<RoleEntity> inputs) {
+        final List<RoleDTO> targets = new ArrayList<>();
         if (inputs != null) {
             inputs.forEach((entity) -> targets.add(transformRoleEntity(entity)));
         }

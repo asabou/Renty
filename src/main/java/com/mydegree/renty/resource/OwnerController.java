@@ -1,9 +1,12 @@
 package com.mydegree.renty.resource;
 
 import com.mydegree.renty.service.abstracts.IEntertainmentPlaceService;
+import com.mydegree.renty.service.abstracts.IReservationService;
+import com.mydegree.renty.service.impl.UserServiceImpl;
 import com.mydegree.renty.service.model.EntertainmentPlaceDTO;
 import com.mydegree.renty.service.model.EntertainmentPlaceInputDTO;
-import com.mydegree.renty.service.impl.UserServiceImpl;
+import com.mydegree.renty.service.model.UserDTO;
+import com.mydegree.renty.service.model.UserDetailsDTO;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,28 +16,18 @@ import java.util.List;
 public class OwnerController {
     private final UserServiceImpl userService;
     private final IEntertainmentPlaceService entertainmentPlaceService;
+    private final IReservationService reservationService;
 
-    public OwnerController(UserServiceImpl userService, IEntertainmentPlaceService entertainmentPlaceService) {
+    public OwnerController(UserServiceImpl userService, IEntertainmentPlaceService entertainmentPlaceService, IReservationService reservationService) {
         this.userService = userService;
         this.entertainmentPlaceService = entertainmentPlaceService;
+        this.reservationService = reservationService;
     }
 
-    /**
-     * Delete user; because of the cascade type, all dependent entities will be removed
-     * @param id Long
-     */
-    @DeleteMapping("/delete-account-by-id")
-    private void deleteAccount(@RequestParam(name = "id") Long id) {
-        userService.deleteUserById(id);
-    }
-
-    /**
-     * Delete user; because of the cascade type, all dependent entities will be removed
-     * @param username String
-     */
-    @DeleteMapping("/delete-account-by-username")
-    private void deleteAccount(@RequestParam(name = "username") String username) {
-        userService.deleteUserByUsername(username);
+    @DeleteMapping("/delete-account")
+    private void deleteAccount(@RequestHeader(name = "Authorization") String authorization) {
+        final String token = authorization.split(" ")[1];
+        userService.deleteAccount(token);
     }
 
     @PostMapping("/create-entertainment-place")
@@ -43,7 +36,33 @@ public class OwnerController {
     }
 
     @GetMapping("/all-owned-entertainment-places")
-    private List<EntertainmentPlaceDTO> getAllOwnedEntertainmentPlaces(@RequestParam(name = "id") Long id) {
+    private List<EntertainmentPlaceDTO> findAllOwnedEntertainmentPlaces(@RequestParam(name = "id") Long id) {
         return entertainmentPlaceService.findAllEntertainmentPlacesForAnOwnerId(id);
     }
+
+    @GetMapping("/all-entertainment-places")
+    private List<EntertainmentPlaceDTO> findAllEntertainmentPlaces() {
+        return entertainmentPlaceService.findAllEntertainmentPlaces();
+    }
+
+    @DeleteMapping("/delete-entertainment-place-by-id")
+    private void deleteEntertainmentPlaceById(@RequestParam(name = "id") Long id) {
+        entertainmentPlaceService.deleteEntertainmentPlaceById(id);
+    }
+
+    @DeleteMapping("/delete-entertainment-place-by-name")
+    private void deleteEntertainmentPlaceByName(@RequestParam(name = "name") String name) {
+        entertainmentPlaceService.deleteEntertainmentPlaceByName(name);
+    }
+
+    @PutMapping("/update-account")
+    private void updateAccount(@RequestBody UserDetailsDTO userDetails) {
+        userService.updateAccount(userDetails);
+    }
+
+    @PutMapping("/reset-password")
+    private void resetPassword(@RequestBody UserDTO userDTO) {
+        userService.resetPassword(userDTO);
+    }
+
 }

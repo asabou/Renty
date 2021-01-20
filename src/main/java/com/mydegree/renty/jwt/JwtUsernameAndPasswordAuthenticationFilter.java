@@ -1,5 +1,6 @@
 package com.mydegree.renty.jwt;
 
+import com.mydegree.renty.service.abstracts.IUserService;
 import com.mydegree.renty.utils.Base64Utils;
 import com.mydegree.renty.utils.ServicesUtils;
 import io.jsonwebtoken.Jwts;
@@ -22,18 +23,21 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     private final AuthenticationManager authenticationManager;
     private final JwtConfig jwtConfig;
     private final SecretKey secretKey;
+    private final IUserService userService;
 
     public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authenticationManager,
                                                       JwtConfig jwtConfig,
-                                                      SecretKey secretKey) {
+                                                      SecretKey secretKey,
+                                                      IUserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtConfig = jwtConfig;
         this.secretKey = secretKey;
+        this.userService = userService;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        final String authHeader = request.getHeader("Authorization");
+        final String authHeader = request.getHeader("Authorization").split(" ")[1];
         final String authStringDecoded = Base64Utils.decode(authHeader);
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 Base64Utils.getUsername(authStringDecoded),
@@ -50,17 +54,19 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())
+                .claim("userId", userService.findUserDetailsIdByUsername(authResult.getName()))
                 .setIssuedAt(new Date())
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(1)))
                 .signWith(secretKey)
                 .compact();
 
-       response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + " " + token);
+        response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + " " + token);
+        response.addHeader("Access-Control-Expose-Headers", jwtConfig.getAuthorizationHeader());
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-       response.getWriter().write(ServicesUtils.transformToJSONError("Login failed! Username or password incorrect!"));
+       response.getWriter().write("Login failed! Username or password incorrect!");
     }
 }

@@ -4,40 +4,53 @@ import com.mydegree.renty.dao.entity.EntertainmentActivityPlaceEntity;
 import com.mydegree.renty.dao.entity.EntertainmentActivityPlaceId;
 import com.mydegree.renty.dao.entity.ReservationEntity;
 import com.mydegree.renty.dao.entity.UserDetailsEntity;
-import com.mydegree.renty.dao.repository.IEntertainmentActivityPlaceRepository;
-import com.mydegree.renty.dao.repository.IReservationRepository;
-import com.mydegree.renty.dao.repository.IUserDetailsRepository;
-import com.mydegree.renty.exceptions.NotFoundException;
+import com.mydegree.renty.dao.repository.*;
+import com.mydegree.renty.service.abstracts.AbstractService;
 import com.mydegree.renty.service.abstracts.IReservationService;
+import com.mydegree.renty.service.helper.EntertainmentActivityPlaceIdTransformer;
+import com.mydegree.renty.service.model.EntertainmentActivityPlaceIdDTO;
 import com.mydegree.renty.service.model.ReservationInputDTO;
 import com.mydegree.renty.service.model.ReservationOutputDTO;
+import com.mydegree.renty.utils.DateUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ReservationServiceImpl implements IReservationService {
+public class ReservationServiceImpl extends AbstractService implements IReservationService {
     private final IReservationRepository reservationRepository;
     private final IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository;
-    private final IUserDetailsRepository userDetailsRepository;
 
-    public ReservationServiceImpl(IReservationRepository reservationRepository, IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository, IUserDetailsRepository userDetailsRepository) {
+    public ReservationServiceImpl(IUserRepository userRepository, IUserDetailsRepository userDetailsRepository,
+                                  IRoleRepository roleRepository, IEntertainmentActivityRepository entertainmentActivityRepository,
+                                  PasswordEncoder passwordEncoder, IReservationRepository reservationRepository,
+                                  IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository) {
+        super(userRepository, userDetailsRepository, roleRepository, entertainmentActivityRepository, passwordEncoder);
         this.reservationRepository = reservationRepository;
         this.entertainmentActivityPlaceRepository = entertainmentActivityPlaceRepository;
-        this.userDetailsRepository = userDetailsRepository;
     }
 
     @Override
     public void saveReservation(ReservationInputDTO reservationInput) {
-        final EntertainmentActivityPlaceEntity entertainmentActivityPlace = findEntertainmentActivityPlaceEntityFrom(reservationInput);
-        final UserDetailsEntity rentalRepresentative = findUserDetailsEntityFrom(reservationInput);
+        final Long entertainmentActivityId = reservationInput.getEntertainmentActivityId();
+        final Long entertainmentPlaceId = reservationInput.getEntertainmentPlaceId();
+        final Timestamp reservationDate = reservationInput.getReservationDate();
+        final Integer reservationHour = reservationInput.getReservationHour();
+        final Long rentalRepresentativeId = reservationInput.getRentalRepresentativeId();
+        final EntertainmentActivityPlaceEntity entertainmentActivityPlace = findEntertainmentActivityPlaceEntityFrom(entertainmentActivityId, entertainmentPlaceId);
+        final ReservationEntity reservation =
+                reservationRepository.findReservationEntityByEntertainmentActivityPlaceAndReservationDateAndReservationHour(entertainmentActivityPlace, reservationDate, reservationHour);
+        if (reservation != null) {
+            throwBadRequestException("The reservation from the chosen place and activity and date and hour is already done by someone else!");
+        }
+        final UserDetailsEntity rentalRepresentative = findUserDetailsEntityById(rentalRepresentativeId);
         final ReservationEntity reservationEntity = new ReservationEntity();
-        reservationEntity.setReservationDate(reservationInput.getReservationDate());
-        reservationEntity.setReservationHour(reservationInput.getReservationHour());
+        reservationEntity.setReservationDate(reservationDate);
+        reservationEntity.setReservationHour(reservationHour);
         reservationEntity.setEntertainmentActivityPlace(entertainmentActivityPlace);
         reservationEntity.setUserDetails(rentalRepresentative);
         reservationRepository.save(reservationEntity);
@@ -47,7 +60,7 @@ public class ReservationServiceImpl implements IReservationService {
     public void cancelReservation(Long id) {
         Optional<ReservationEntity> entityOptional = reservationRepository.findById(id);
         if (entityOptional.isEmpty()) {
-            throw new NotFoundException("Reservation not found!");
+            throwNotFoundException("Reservation not found!");
         }
         reservationRepository.delete(entityOptional.get());
     }
@@ -55,7 +68,7 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public List<ReservationOutputDTO> findAllActiveReservationsByUserId(Long id) {
         final Iterable<ReservationEntity> reservationEntities =
-                reservationRepository.findReservationEntitiesByUserDetailsIdAndReservationDateIsGreaterThan(id, Timestamp.from(Instant.now()));
+                reservationRepository.findReservationEntitiesByUserDetailsIdAndReservationDateIsGreaterThan(id, DateUtils.getCurrentTimestamp());
         return prepareReservationsForOutput(reservationEntities);
     }
 
@@ -68,7 +81,20 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public List<ReservationOutputDTO> findAllActiveReservations() {
         final Iterable<ReservationEntity> reservationEntities =
-                reservationRepository.findReservationEntitiesByReservationDateGreaterThan(Timestamp.from(Instant.now()));
+                reservationRepository.findReservationEntitiesByReservationDateGreaterThan(DateUtils.getCurrentTimestamp());
+        return prepareReservationsForOutput(reservationEntities);
+    }
+
+    @Override
+    public List<ReservationOutputDTO> findAllActiveReservationsByEntertainmentActivityPlace(EntertainmentActivityPlaceIdDTO entertainmentActivityPlaceId) {
+        final Optional<EntertainmentActivityPlaceEntity> entertainmentActivityPlaceEntityOptional =
+                entertainmentActivityPlaceRepository.findById(EntertainmentActivityPlaceIdTransformer.transformEntertainmentActivityPlaceId(entertainmentActivityPlaceId));
+        if (entertainmentActivityPlaceEntityOptional.isEmpty()) {
+            throwNotFoundException("Entertainment activity place not found!");
+        }
+        final Iterable<ReservationEntity> reservationEntities =
+                reservationRepository.findReservationEntitiesByEntertainmentActivityPlaceAndReservationDateIsGreaterThan(entertainmentActivityPlaceEntityOptional.get(),
+                        DateUtils.getCurrentTimestamp());
         return prepareReservationsForOutput(reservationEntities);
     }
 
@@ -91,22 +117,19 @@ public class ReservationServiceImpl implements IReservationService {
         return output;
     }
 
-    private UserDetailsEntity findUserDetailsEntityFrom(final ReservationInputDTO reservationInputDTO) {
-        final Long userDetailsId = reservationInputDTO.getRentalRepresentativeId();
+    private UserDetailsEntity findUserDetailsEntityById(final Long userDetailsId) {
         final Optional<UserDetailsEntity> entityOptional = userDetailsRepository.findById(userDetailsId);
         if (entityOptional.isEmpty()) {
-            throw new NotFoundException("Rental representative not found in our database!");
+            throwNotFoundException("Rental representative not found in our database!");
         }
         return entityOptional.get();
     }
 
-    private EntertainmentActivityPlaceEntity findEntertainmentActivityPlaceEntityFrom(final ReservationInputDTO reservationInput) {
-        final Long entertainmentActivityId = reservationInput.getEntertainmentActivityId();
-        final Long entertainmentPlaceId = reservationInput.getEntertainmentPlaceId();
+    private EntertainmentActivityPlaceEntity findEntertainmentActivityPlaceEntityFrom(final Long entertainmentActivityId, final Long entertainmentPlaceId) {
         final EntertainmentActivityPlaceId entertainmentActivityPlaceId = new EntertainmentActivityPlaceId(entertainmentActivityId, entertainmentPlaceId);
         final Optional<EntertainmentActivityPlaceEntity> entityOptional = entertainmentActivityPlaceRepository.findById(entertainmentActivityPlaceId);
         if (entityOptional.isEmpty()) {
-            throw new NotFoundException("Entertainment place or entertainment activity not found!");
+            throwNotFoundException("Entertainment place or entertainment activity not found!");
         }
         return entityOptional.get();
     }

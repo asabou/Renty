@@ -2,20 +2,28 @@ package com.mydegree.renty.service.impl;
 
 import com.mydegree.renty.dao.entity.EntertainmentActivityEntity;
 import com.mydegree.renty.dao.repository.IEntertainmentActivityRepository;
+import com.mydegree.renty.dao.repository.IRoleRepository;
+import com.mydegree.renty.dao.repository.IUserDetailsRepository;
+import com.mydegree.renty.dao.repository.IUserRepository;
 import com.mydegree.renty.exceptions.BadRequestException;
+import com.mydegree.renty.service.abstracts.AbstractService;
 import com.mydegree.renty.service.abstracts.IEntertainmentActivityService;
 import com.mydegree.renty.service.helper.EntertainmentActivityTransformer;
 import com.mydegree.renty.service.model.EntertainmentActivityDTO;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class EntertainmentActivityServiceImpl implements IEntertainmentActivityService {
-    private final IEntertainmentActivityRepository entertainmentActivityRepository;
+public class EntertainmentActivityServiceImpl extends AbstractService implements IEntertainmentActivityService {
 
-    public EntertainmentActivityServiceImpl(IEntertainmentActivityRepository entertainmentActivityRepository) {
-        this.entertainmentActivityRepository = entertainmentActivityRepository;
+    public EntertainmentActivityServiceImpl(IUserRepository userRepository,
+                                            IUserDetailsRepository userDetailsRepository,
+                                            IRoleRepository roleRepository,
+                                            IEntertainmentActivityRepository entertainmentActivityRepository,
+                                            PasswordEncoder passwordEncoder) {
+        super(userRepository, userDetailsRepository, roleRepository, entertainmentActivityRepository, passwordEncoder);
     }
 
     @Override
@@ -27,12 +35,6 @@ public class EntertainmentActivityServiceImpl implements IEntertainmentActivityS
 
     @Override
     public void saveEntertainmentActivity(EntertainmentActivityDTO entertainmentActivity) {
-        final EntertainmentActivityEntity activity =
-                entertainmentActivityRepository.findEntertainmentActivityEntityByName(entertainmentActivity.getName());
-        if (activity != null) {
-            throw new BadRequestException("Entertainment activity " + entertainmentActivity.getName() + " already exists!");
-        }
-        final EntertainmentActivityEntity entity = EntertainmentActivityTransformer.transformEntertainmentActivity(entertainmentActivity);
-        entertainmentActivityRepository.save(entity);
+        createEntertainmentActivity(entertainmentActivity);
     }
 }

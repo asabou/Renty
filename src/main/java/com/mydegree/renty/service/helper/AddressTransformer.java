@@ -10,7 +10,6 @@ public class AddressTransformer {
         target.setCity(input.getCity());
         target.setStreet(input.getStreet());
         target.setNumber(input.getNumber());
-        target.setEntertainmentPlace(EntertainmentPlaceTransformer.transformEntertainmentPlaceEntity(input.getEntertainmentPlace()));
     }
 
     public static AddressDTO transformAddressEntity(final AddressEntity input) {

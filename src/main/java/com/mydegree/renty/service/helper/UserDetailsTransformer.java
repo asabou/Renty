@@ -51,7 +51,7 @@ public class UserDetailsTransformer {
         return list;
     }
 
-    public static List<UserDetailsDTO> transformUsersDetailsEntities(final List<UserDetailsEntity> usersDetails) {
+    public static List<UserDetailsDTO> transformUsersDetailsEntities(final Iterable<UserDetailsEntity> usersDetails) {
         final List<UserDetailsDTO> list = new ArrayList<>();
         if (usersDetails != null) {
             usersDetails.forEach((userDetails) -> list.add(transformUserDetailsEntity(userDetails)));

@@ -74,11 +74,15 @@ public class BootStrapData implements CommandLineRunner {
         final UserEntity adminAlex = new UserEntity();
         final RoleEntity roleAdmin = roleRepository.findRoleEntityByRole("ADMIN");
         final RoleEntity roleRenter = roleRepository.findRoleEntityByRole("RENTER");
+        final UserDetailsEntity adminAlexDetails = new UserDetailsEntity();
+        adminAlex.setUserDetails(adminAlexDetails);
+        adminAlexDetails.setUser(adminAlex);
 
         adminAlex.setUsername("alex");
         adminAlex.setPassword(passwordEncoder.encode("password"));
         adminAlex.setAuthorities(Sets.newHashSet(roleAdmin, roleRenter));
         userRepository.save(adminAlex);
+        userDetailsRepository.save(adminAlexDetails);
     }
 
     private void saveAdminJulia() {

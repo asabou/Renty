@@ -14,6 +14,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpStatus.FORBIDDEN.value());
-        response.getWriter().write(ServicesUtils.transformToJSONError("Access denied! Invalid token authentication!"));
+        response.getWriter().write("Access denied! Invalid token authentication!");
     }
 }

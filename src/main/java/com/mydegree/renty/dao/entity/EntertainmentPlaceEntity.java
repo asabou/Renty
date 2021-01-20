@@ -32,7 +32,7 @@ public class EntertainmentPlaceEntity {
     @OneToOne(targetEntity = AddressEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private AddressEntity address;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private UserDetailsEntity userDetails;
 
     @OneToMany(mappedBy = "entertainmentPlace", cascade =  { CascadeType.MERGE, CascadeType.REMOVE })

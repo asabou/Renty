@@ -2,6 +2,7 @@ package com.mydegree.renty.security;
 
 import com.mydegree.renty.jwt.*;
 import com.mydegree.renty.service.abstracts.ILoginService;
+import com.mydegree.renty.service.abstracts.IUserService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -22,15 +24,17 @@ import javax.crypto.SecretKey;
 public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     private final ILoginService loginService;
+    private final IUserService userService;
     private final JwtConfig jwtConfig;
     private final SecretKey secretKey;
 
     public ApplicationSecurityConfiguration(PasswordEncoder passwordEncoder,
                                             ILoginService loginService,
-                                            JwtConfig jwtConfig,
+                                            IUserService userService, JwtConfig jwtConfig,
                                             SecretKey secretKey) {
         this.passwordEncoder = passwordEncoder;
         this.loginService = loginService;
+        this.userService = userService;
         this.jwtConfig = jwtConfig;
         this.secretKey = secretKey;
     }
@@ -38,16 +42,16 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors().disable()
+                .cors().and()
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey))
+                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey, userService))
                 .addFilterAfter(new JwtTokenVerifierFilter(jwtConfig, secretKey), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/admin/**", "/owner/**", "/renter/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.ADMIN.name())
-                .antMatchers("/owner/**", "/renter/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.PLACE_OWNER.name(), ApplicationUserRole.ADMIN.name())
+                .antMatchers("/owner/**", "/renter/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.OWNER.name(), ApplicationUserRole.ADMIN.name())
                 .antMatchers("/renter/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.RENTER.name(),
                                                                                     ApplicationUserRole.ADMIN.name(),
                                                                                     ApplicationUserRole.RENTER.name())
@@ -83,7 +87,7 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
             @Override
             public void addCorsMappings(@NotNull CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedMethods("HEAD", "POST", "PUT", "DELETE", "PATCH", "GET");
+                        .allowedMethods("*");
             }
         };
     }
