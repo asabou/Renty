@@ -24,16 +24,6 @@ public class RenterController {
         this.entertainmentActivityService = entertainmentActivityService;
     }
 
-    @GetMapping("/find-user-by-id")
-    private UserDetailsDTO findUserDetailsByUserId(@RequestParam(name = "id") Long id) {
-        return userService.findUserByUserId(id);
-    }
-
-    @PutMapping("/update-user-details")
-    private void updateUser(@RequestBody UserDetailsDTO userDetailsDTO) {
-        userService.updateUser(userDetailsDTO);
-    }
-
     @DeleteMapping("/delete-account")
     private void deleteAccount(@RequestHeader(name = "Authorization") String authorization) {
         final String token = authorization.split(" ")[1];
@@ -50,18 +40,18 @@ public class RenterController {
         reservationService.saveReservation(reservationInputDTO);
     }
 
-    @DeleteMapping("/cancel-reservation")
-    private void cancelReservation(@RequestParam(name = "id") Long id) {
+    @DeleteMapping("/cancel-reservation/{id}")
+    private void cancelReservation(@PathVariable("id") Long id) {
         reservationService.cancelReservation(id);
     }
 
-    @GetMapping("/all-active-reservations")
-    private List<ReservationOutputDTO> findAllActiveReservations(@RequestParam(name = "id") Long id) {
+    @GetMapping("/all-active-reservations/{id}")
+    private List<ReservationOutputDTO> findAllActiveReservations(@PathVariable("id") Long id) {
         return reservationService.findAllActiveReservationsByUserId(id);
     }
 
-    @GetMapping("/search-entertainment-place")
-    private List<EntertainmentPlaceDTO> searchEntertainmentPlace(@RequestParam(name = "filter") String filter) {
+    @GetMapping("/search-entertainment-place/{filter}")
+    private List<EntertainmentPlaceDTO> searchEntertainmentPlace(@PathVariable("filter") String filter) {
         return entertainmentPlaceService.findAllEntertainmentPlacesByAddressOrNameOrDescriptionOrUserDetailsFirstNameOrUserDetailsLastName(filter);
     }
 
@@ -70,8 +60,8 @@ public class RenterController {
         userService.resetPassword(userDTO);
     }
 
-    @GetMapping("/get-entertainment-activities-for-place")
-    private List<EntertainmentActivityDTO> findEntertainmentActivitiesForPlace(@RequestParam(name = "id") Long id) {
+    @GetMapping("/entertainment-activities-by-entertainment-place/{id}")
+    private List<EntertainmentActivityDTO> findEntertainmentActivitiesForPlace(@PathVariable("id") Long id) {
         return entertainmentActivityService.findEntertainmentActivitiesByEntertainmentPlaceId(id);
     }
 }

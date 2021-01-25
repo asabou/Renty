@@ -12,8 +12,10 @@ import com.mydegree.renty.service.helper.EntertainmentPlaceTransformer;
 import com.mydegree.renty.service.model.EntertainmentPlaceDTO;
 import com.mydegree.renty.service.model.EntertainmentPlaceInputDTO;
 import com.mydegree.renty.utils.ServicesUtils;
+import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
@@ -27,13 +29,15 @@ public class EntertainmentPlaceServiceImpl implements IEntertainmentPlaceService
     private final IEntertainmentActivityRepository entertainmentActivityRepository;
     private final IAddressRepository addressRepository;
     private final IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository;
+    private final SecretKey secretKey;
 
-    public EntertainmentPlaceServiceImpl(IEntertainmentPlaceRepository entertainmentPlaceRepository, IUserDetailsRepository userDetailsRepository, IEntertainmentActivityRepository entertainmentActivityRepository, IAddressRepository addressRepository, IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository) {
+    public EntertainmentPlaceServiceImpl(IEntertainmentPlaceRepository entertainmentPlaceRepository, IUserDetailsRepository userDetailsRepository, IEntertainmentActivityRepository entertainmentActivityRepository, IAddressRepository addressRepository, IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository, SecretKey secretKey) {
         this.entertainmentPlaceRepository = entertainmentPlaceRepository;
         this.userDetailsRepository = userDetailsRepository;
         this.entertainmentActivityRepository = entertainmentActivityRepository;
         this.addressRepository = addressRepository;
         this.entertainmentActivityPlaceRepository = entertainmentActivityPlaceRepository;
+        this.secretKey = secretKey;
     }
 
     @Override
@@ -43,8 +47,10 @@ public class EntertainmentPlaceServiceImpl implements IEntertainmentPlaceService
     }
 
     @Override
-    public List<EntertainmentPlaceDTO> findAllEntertainmentPlacesForAnOwnerId(Long id) {
-        final Iterable<EntertainmentPlaceEntity> entities = entertainmentPlaceRepository.findEntertainmentPlaceEntitiesByUserDetailsId(id);
+    public List<EntertainmentPlaceDTO> findAllOwnedEntertainmentPlaces(String token) {
+        final Claims claims = ServicesUtils.getClaimsFromTokenUsingSecretKey(token, secretKey);
+        final Iterable<EntertainmentPlaceEntity> entities =
+                entertainmentPlaceRepository.findEntertainmentPlaceEntitiesByUserDetailsId(Long.parseLong(claims.get("userId").toString()));
         return EntertainmentPlaceTransformer.transformEntertainmentPlaceEntities(entities);
     }
 

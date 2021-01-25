@@ -8,6 +8,7 @@ import com.mydegree.renty.service.model.EntertainmentActivityDTO;
 import com.mydegree.renty.service.model.RoleDTO;
 import com.mydegree.renty.service.model.UserDTO;
 import com.mydegree.renty.service.model.UserDetailsDTO;
+import com.mydegree.renty.utils.Constants;
 import com.mydegree.renty.utils.ServicesUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,24 +42,29 @@ public class AdminController {
         userService.createOwnerUser(userDetailsDTO);
     }
 
-    @DeleteMapping("/delete-account-by-id")
-    private void deleteAccount(@RequestParam(name = "id") Long id) {
-        userService.deleteAccountByUserId(id);
+    @DeleteMapping("/delete-account")
+    private void deleteAccount(@RequestParam(name = "id") String id, @RequestParam(name = "username") String username) {
+        if (!ServicesUtils.isStringNullOrEmpty(username)) {
+            userService.deleteAccountByUsername(username);
+        } else {
+            if (!ServicesUtils.isStringNullOrEmpty(id)) {
+                userService.deleteAccountByUserId(ServicesUtils.convertStringToLong(id));
+            } else {
+                userService.throwBadRequestException(Constants.INVALID_QUERY_PARAMS);
+            }
+        }
     }
 
-    @DeleteMapping("/delete-account-by-username")
-    private void deleteAccount(@RequestParam(name = "username") String username) {
-        userService.deleteAccountByUsername(username);
-    }
-
-    @PostMapping("/update-roles-for-user")
+    @PutMapping("/update-roles-for-user")
     private void updateRoleForUser(@RequestParam(name = "username") String username,
-                                   @RequestParam(name = "id") Long id, @RequestBody List<RoleDTO> roles) {
+                                   @RequestParam(name = "id") String id, @RequestBody List<RoleDTO> roles) {
         if (!ServicesUtils.isStringNullOrEmpty(username)) {
             adminService.updateRolesForUsername(username, roles);
         } else {
-            if (id != null) {
-                adminService.updateRolesForUserId(id, roles);
+            if (!ServicesUtils.isStringNullOrEmpty(id)) {
+                adminService.updateRolesForUserId(ServicesUtils.convertStringToLong(id), roles);
+            } else {
+                userService.throwBadRequestException(Constants.INVALID_QUERY_PARAMS);
             }
         }
     }
@@ -82,15 +88,4 @@ public class AdminController {
     private List<RoleDTO> getAllRoles() {
         return roleService.findAllRoles();
     }
-
-    @PutMapping("/update-account")
-    private void updateAccount(@RequestBody UserDetailsDTO userDetails) {
-        userService.updateAccount(userDetails);
-    }
-
-    @PutMapping("/reset-password")
-    private void resetPassword(@RequestBody UserDTO userDTO) {
-        userService.resetPassword(userDTO);
-    }
-
 }

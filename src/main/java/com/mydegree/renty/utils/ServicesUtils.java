@@ -37,4 +37,8 @@ public class ServicesUtils {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    public static Long convertStringToLong(final String string) {
+        return Long.parseLong(string);
+    }
 }
