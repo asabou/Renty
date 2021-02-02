@@ -15,6 +15,4 @@ public class EntertainmentActivityDTO {
     private String name;
 
     private String description;
-
-
 }

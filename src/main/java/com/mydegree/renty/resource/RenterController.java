@@ -55,13 +55,18 @@ public class RenterController {
         return entertainmentPlaceService.findAllEntertainmentPlacesByAddressOrNameOrDescriptionOrUserDetailsFirstNameOrUserDetailsLastName(filter);
     }
 
+    @GetMapping("/find-entertainment-place/{id}")
+    private EntertainmentPlaceDTO findEntertainmentPlaceById(@PathVariable("id") Long id) {
+        return entertainmentPlaceService.findById(id);
+    }
+
     @PutMapping("/reset-password")
     private void resetPassword(@RequestBody UserDTO userDTO) {
         userService.resetPassword(userDTO);
     }
 
     @GetMapping("/entertainment-activities-by-entertainment-place/{id}")
-    private List<EntertainmentActivityDTO> findEntertainmentActivitiesForPlace(@PathVariable("id") Long id) {
-        return entertainmentActivityService.findEntertainmentActivitiesByEntertainmentPlaceId(id);
+    private List<EntertainmentActivityOutputDTO> findEntertainmentActivitiesForPlace(@PathVariable("id") Long id) {
+        return entertainmentActivityService.findEntertainmentActivitiesDetailsByEntertainmentPlaceId(id);
     }
 }

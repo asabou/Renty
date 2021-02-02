@@ -6,6 +6,7 @@ import com.mydegree.renty.dao.entity.EntertainmentPlaceEntity;
 import com.mydegree.renty.dao.entity.UserDetailsEntity;
 import com.mydegree.renty.dao.repository.*;
 import com.mydegree.renty.exceptions.NotFoundException;
+import com.mydegree.renty.service.abstracts.AbstractService;
 import com.mydegree.renty.service.abstracts.IEntertainmentPlaceService;
 import com.mydegree.renty.service.helper.AddressTransformer;
 import com.mydegree.renty.service.helper.EntertainmentPlaceTransformer;
@@ -13,6 +14,7 @@ import com.mydegree.renty.service.model.EntertainmentPlaceDTO;
 import com.mydegree.renty.service.model.EntertainmentPlaceInputDTO;
 import com.mydegree.renty.utils.ServicesUtils;
 import io.jsonwebtoken.Claims;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -23,19 +25,24 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class EntertainmentPlaceServiceImpl implements IEntertainmentPlaceService {
+public class EntertainmentPlaceServiceImpl extends AbstractService implements IEntertainmentPlaceService {
     private final IEntertainmentPlaceRepository entertainmentPlaceRepository;
-    private final IUserDetailsRepository userDetailsRepository;
-    private final IEntertainmentActivityRepository entertainmentActivityRepository;
     private final IAddressRepository addressRepository;
     private final IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository;
     private final SecretKey secretKey;
 
-    public EntertainmentPlaceServiceImpl(IEntertainmentPlaceRepository entertainmentPlaceRepository, IUserDetailsRepository userDetailsRepository, IEntertainmentActivityRepository entertainmentActivityRepository, IAddressRepository addressRepository, IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository, SecretKey secretKey) {
-        this.entertainmentPlaceRepository = entertainmentPlaceRepository;
-        this.userDetailsRepository = userDetailsRepository;
-        this.entertainmentActivityRepository = entertainmentActivityRepository;
+    public EntertainmentPlaceServiceImpl(IUserRepository userRepository,
+                                         IEntertainmentPlaceRepository entertainmentPlaceRepository,
+                                         IUserDetailsRepository userDetailsRepository,
+                                         IEntertainmentActivityRepository entertainmentActivityRepository,
+                                         IAddressRepository addressRepository,
+                                         IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository,
+                                         SecretKey secretKey,
+                                         IRoleRepository roleRepository,
+                                         PasswordEncoder passwordEncoder) {
+        super(userRepository, userDetailsRepository, roleRepository, entertainmentActivityRepository, passwordEncoder);
         this.addressRepository = addressRepository;
+        this.entertainmentPlaceRepository = entertainmentPlaceRepository;
         this.entertainmentActivityPlaceRepository = entertainmentActivityPlaceRepository;
         this.secretKey = secretKey;
     }
@@ -90,7 +97,7 @@ public class EntertainmentPlaceServiceImpl implements IEntertainmentPlaceService
     public void deleteEntertainmentPlaceByName(String name) {
         final EntertainmentPlaceEntity entity = entertainmentPlaceRepository.findEntertainmentPlaceEntityByName(name);
         if (entity == null) {
-            throw new NotFoundException("Entertainment place not found!");
+            throwNotFoundException("Entertainment place not found!");
         }
         entertainmentPlaceRepository.delete(entity);
     }
@@ -99,15 +106,24 @@ public class EntertainmentPlaceServiceImpl implements IEntertainmentPlaceService
     public void deleteEntertainmentPlaceById(Long id) {
         final Optional<EntertainmentPlaceEntity> entity = entertainmentPlaceRepository.findById(id);
         if (entity.isEmpty()) {
-            throw new NotFoundException("Entertainment place not found!");
+            throwNotFoundException("Entertainment place not found!");
         }
         entertainmentPlaceRepository.delete(entity.get());
+    }
+
+    @Override
+    public EntertainmentPlaceDTO findById(Long id) {
+        final Optional<EntertainmentPlaceEntity> entity = entertainmentPlaceRepository.findById(id);
+        if (entity.isEmpty()) {
+            throwNotFoundException("Entertainment place not found!");
+        }
+        return EntertainmentPlaceTransformer.transformEntertainmentPlaceEntity(entity.get());
     }
 
     private UserDetailsEntity findUserDetailsById(final Long id) {
         Optional<UserDetailsEntity> user = userDetailsRepository.findById(id);
         if (user.isEmpty()) {
-            throw new NotFoundException("User not found!");
+            throwNotFoundException("User not found!");
         }
         return user.get();
     }

@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IEntertainmentActivityPlaceRepository extends CrudRepository<EntertainmentActivityPlaceEntity, EntertainmentActivityPlaceId> {
+    Iterable<EntertainmentActivityPlaceEntity> findEntertainmentActivityPlaceEntitiesByEntertainmentPlace_Id(final Long id);
 }

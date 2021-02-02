@@ -12,4 +12,5 @@ public interface IEntertainmentPlaceService {
     void saveEntertainmentPlace(final EntertainmentPlaceInputDTO entertainmentPlace);
     void deleteEntertainmentPlaceByName(final String name);
     void deleteEntertainmentPlaceById(final Long id);
+    EntertainmentPlaceDTO findById(final Long id);
 }
