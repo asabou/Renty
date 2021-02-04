@@ -5,6 +5,7 @@ import com.mydegree.renty.service.abstracts.IEntertainmentPlaceService;
 import com.mydegree.renty.service.abstracts.IReservationService;
 import com.mydegree.renty.service.impl.UserServiceImpl;
 import com.mydegree.renty.service.model.*;
+import com.mydegree.renty.utils.ServicesUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,6 +51,14 @@ public class RenterController {
         return reservationService.findAllActiveReservationsByUserId(id);
     }
 
+    @GetMapping("/active-reservations-for-activity-place")
+    private List<ReservationInputDTO> findAllActiveReservationsForActivityAndPlace(@RequestParam("entertainmentActivity") String entertainmentActivity, @RequestParam("entertainmentPlace") String entertainmentPlace) {
+        final EntertainmentActivityPlaceIdDTO ids = new EntertainmentActivityPlaceIdDTO();
+        ids.setEntertainmentActivity(ServicesUtils.convertStringToLong(entertainmentActivity));
+        ids.setEntertainmentPlace(ServicesUtils.convertStringToLong(entertainmentPlace));
+        return reservationService.findAllActiveReservationsByActivityAndPlace(ids);
+    }
+
     @GetMapping("/search-entertainment-place/{filter}")
     private List<EntertainmentPlaceDTO> searchEntertainmentPlace(@PathVariable("filter") String filter) {
         return entertainmentPlaceService.findAllEntertainmentPlacesByAddressOrNameOrDescriptionOrUserDetailsFirstNameOrUserDetailsLastName(filter);
@@ -58,6 +67,11 @@ public class RenterController {
     @GetMapping("/find-entertainment-place/{id}")
     private EntertainmentPlaceDTO findEntertainmentPlaceById(@PathVariable("id") Long id) {
         return entertainmentPlaceService.findById(id);
+    }
+
+    @GetMapping("find-entertainment-activity/{id}")
+    private EntertainmentActivityDTO findEntertainmentActivity(@PathVariable("id") Long id) {
+        return entertainmentActivityService.findEntertainmentActivityById(id);
     }
 
     @PutMapping("/reset-password")

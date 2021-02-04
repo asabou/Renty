@@ -1,6 +1,7 @@
 package com.mydegree.renty.service.abstracts;
 
 import com.mydegree.renty.dao.entity.EntertainmentActivityEntity;
+import com.mydegree.renty.dao.entity.UserDetailsEntity;
 import com.mydegree.renty.dao.entity.UserEntity;
 import com.mydegree.renty.dao.repository.IEntertainmentActivityRepository;
 import com.mydegree.renty.dao.repository.IRoleRepository;
@@ -76,10 +77,13 @@ public abstract class AbstractService implements IAbstractService {
             throwBadRequestException("This user already exists!");
         }
         final UserEntity user = UserTransformer.transformUser(userDTO);
+        final UserDetailsEntity userDetailsEntity = UserDetailsTransformer.transformUserDetails(userDetails);
         final String password = user.getPassword();
         user.setPassword(passwordEncoder.encode(Base64Utils.decode(password)));
+        user.setUserDetails(userDetailsEntity);
+        userDetailsEntity.setUser(user);
         userRepository.save(user);
-        userDetailsRepository.save(UserDetailsTransformer.transformUserDetails(userDetails));
+        userDetailsRepository.save(userDetailsEntity);
     }
 
     @Override

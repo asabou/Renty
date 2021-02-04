@@ -2,7 +2,7 @@ package com.mydegree.renty.service.model;
 
 import lombok.*;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 
 @Getter
 @Setter
@@ -13,6 +13,6 @@ public class ReservationOutputDTO {
     private Long id;
     private String entertainmentPlaceName;
     private String entertainmentActivityName;
-    private Timestamp reservationDate;
+    private Date reservationDate;
     private Integer reservationHour;
 }

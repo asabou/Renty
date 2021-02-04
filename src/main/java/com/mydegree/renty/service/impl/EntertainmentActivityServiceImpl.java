@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EntertainmentActivityServiceImpl extends AbstractService implements IEntertainmentActivityService {
@@ -45,6 +46,15 @@ public class EntertainmentActivityServiceImpl extends AbstractService implements
         final Iterable<EntertainmentActivityPlaceEntity> entities =
                 entertainmentActivityPlaceRepository.findEntertainmentActivityPlaceEntitiesByEntertainmentPlace_Id(id);
         return prepareEntertainmentActivityPlaceForOutput(entities);
+    }
+
+    @Override
+    public EntertainmentActivityDTO findEntertainmentActivityById(Long id) {
+        Optional<EntertainmentActivityEntity> byId = entertainmentActivityRepository.findById(id);
+        if (byId.isEmpty()) {
+            throwNotFoundException("Entertainment activity not found!");
+        }
+        return EntertainmentActivityTransformer.transformEntertainmentActivityEntity(byId.get());
     }
 
     private List<EntertainmentActivityOutputDTO> prepareEntertainmentActivityPlaceForOutput(final Iterable<EntertainmentActivityPlaceEntity> entities) {

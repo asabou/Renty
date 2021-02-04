@@ -15,7 +15,7 @@ import com.mydegree.renty.utils.DateUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +38,7 @@ public class ReservationServiceImpl extends AbstractService implements IReservat
     public void saveReservation(ReservationInputDTO reservationInput) {
         final Long entertainmentActivityId = reservationInput.getEntertainmentActivityId();
         final Long entertainmentPlaceId = reservationInput.getEntertainmentPlaceId();
-        final Timestamp reservationDate = reservationInput.getReservationDate();
+        final Date reservationDate = DateUtils.parseStringToSqlDate(reservationInput.getReservationDate());
         final Integer reservationHour = reservationInput.getReservationHour();
         final Long rentalRepresentativeId = reservationInput.getRentalRepresentativeId();
         final EntertainmentActivityPlaceEntity entertainmentActivityPlace = findEntertainmentActivityPlaceEntityFrom(entertainmentActivityId, entertainmentPlaceId);
@@ -68,7 +68,7 @@ public class ReservationServiceImpl extends AbstractService implements IReservat
     @Override
     public List<ReservationOutputDTO> findAllActiveReservationsByUserId(Long id) {
         final Iterable<ReservationEntity> reservationEntities =
-                reservationRepository.findReservationEntitiesByUserDetailsIdAndReservationDateIsGreaterThan(id, DateUtils.getCurrentTimestamp());
+                reservationRepository.findReservationEntitiesByUserDetailsIdAndReservationDateIsGreaterThan(id, DateUtils.getCurrentDate());
         return prepareReservationsForOutput(reservationEntities);
     }
 
@@ -81,21 +81,42 @@ public class ReservationServiceImpl extends AbstractService implements IReservat
     @Override
     public List<ReservationOutputDTO> findAllActiveReservations() {
         final Iterable<ReservationEntity> reservationEntities =
-                reservationRepository.findReservationEntitiesByReservationDateGreaterThan(DateUtils.getCurrentTimestamp());
+                reservationRepository.findReservationEntitiesByReservationDateGreaterThan(DateUtils.getCurrentDate());
         return prepareReservationsForOutput(reservationEntities);
     }
 
     @Override
     public List<ReservationOutputDTO> findAllActiveReservationsByEntertainmentActivityPlace(EntertainmentActivityPlaceIdDTO entertainmentActivityPlaceId) {
+        final EntertainmentActivityPlaceEntity entertainmentActivityPlaceEntity = findEntertainmentActivityPlace(entertainmentActivityPlaceId);
+        final Iterable<ReservationEntity> reservationEntities =
+                reservationRepository.findReservationEntitiesByEntertainmentActivityPlaceAndReservationDateIsGreaterThanEqual(entertainmentActivityPlaceEntity, DateUtils.getCurrentDate());
+        return prepareReservationsForOutput(reservationEntities);
+    }
+
+    @Override
+    public List<ReservationInputDTO> findAllActiveReservationsByActivityAndPlace(EntertainmentActivityPlaceIdDTO entertainmentActivityPlaceId) {
+        final EntertainmentActivityPlaceEntity entertainmentActivityPlaceEntity = findEntertainmentActivityPlace(entertainmentActivityPlaceId);
+        final Iterable<ReservationEntity> reservationEntities =
+                reservationRepository.findReservationEntitiesByEntertainmentActivityPlaceAndReservationDateIsGreaterThanEqual(entertainmentActivityPlaceEntity, DateUtils.getCurrentDate());
+        return prepareReservationsForScheduler(reservationEntities);
+    }
+
+    private List<ReservationInputDTO> prepareReservationsForScheduler(final Iterable<ReservationEntity> entities) {
+        final List<ReservationInputDTO> list = new ArrayList<>();
+        if (entities == null) {
+            return list;
+        }
+        entities.forEach((entity) -> list.add(transformReservationEntityToReservationForScheduler(entity)));
+        return list;
+    }
+
+    private EntertainmentActivityPlaceEntity findEntertainmentActivityPlace(EntertainmentActivityPlaceIdDTO entertainmentActivityPlaceId) {
         final Optional<EntertainmentActivityPlaceEntity> entertainmentActivityPlaceEntityOptional =
                 entertainmentActivityPlaceRepository.findById(EntertainmentActivityPlaceIdTransformer.transformEntertainmentActivityPlaceId(entertainmentActivityPlaceId));
         if (entertainmentActivityPlaceEntityOptional.isEmpty()) {
             throwNotFoundException("Entertainment activity place not found!");
         }
-        final Iterable<ReservationEntity> reservationEntities =
-                reservationRepository.findReservationEntitiesByEntertainmentActivityPlaceAndReservationDateIsGreaterThan(entertainmentActivityPlaceEntityOptional.get(),
-                        DateUtils.getCurrentTimestamp());
-        return prepareReservationsForOutput(reservationEntities);
+        return entertainmentActivityPlaceEntityOptional.get();
     }
 
     private List<ReservationOutputDTO> prepareReservationsForOutput(final Iterable<ReservationEntity> entities) {
@@ -105,6 +126,16 @@ public class ReservationServiceImpl extends AbstractService implements IReservat
         }
         entities.forEach((entity) -> list.add(transformReservationEntityIntoReservationOutput(entity)));
         return list;
+    }
+
+    private ReservationInputDTO transformReservationEntityToReservationForScheduler(final ReservationEntity input) {
+        final ReservationInputDTO output = new ReservationInputDTO();
+        output.setReservationDate(input.getReservationDate().toString());
+        output.setReservationHour(input.getReservationHour());
+        output.setEntertainmentActivityId(input.getEntertainmentActivityPlace().getEntertainmentActivity().getId());
+        output.setEntertainmentPlaceId(input.getEntertainmentActivityPlace().getEntertainmentPlace().getId());
+        output.setRentalRepresentativeId(input.getUserDetails().getId());
+        return output;
     }
 
     private ReservationOutputDTO transformReservationEntityIntoReservationOutput(final ReservationEntity input) {

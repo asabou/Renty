@@ -9,6 +9,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Data
 @Embeddable
+@ToString
 public class EntertainmentActivityPlaceId implements Serializable {
     private Long entertainmentActivity;
     private Long entertainmentPlace;

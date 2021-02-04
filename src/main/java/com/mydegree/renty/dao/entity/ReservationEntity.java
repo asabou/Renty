@@ -3,8 +3,7 @@ package com.mydegree.renty.dao.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.sql.Date;
 
 @Entity
 @Getter
@@ -23,7 +22,7 @@ public class ReservationEntity {
     private EntertainmentActivityPlaceEntity entertainmentActivityPlace;
 
     @Column(name = "reservation_date")
-    private Timestamp reservationDate;
+    private Date reservationDate;
 
     @Column(name = "reservation_hour")
     private Integer reservationHour;
