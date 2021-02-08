@@ -5,13 +5,13 @@ import com.mydegree.renty.dao.entity.EntertainmentActivityPlaceEntity;
 import com.mydegree.renty.dao.entity.EntertainmentPlaceEntity;
 import com.mydegree.renty.dao.entity.UserDetailsEntity;
 import com.mydegree.renty.dao.repository.*;
-import com.mydegree.renty.exceptions.NotFoundException;
 import com.mydegree.renty.service.abstracts.AbstractService;
 import com.mydegree.renty.service.abstracts.IEntertainmentPlaceService;
 import com.mydegree.renty.service.helper.AddressTransformer;
 import com.mydegree.renty.service.helper.EntertainmentPlaceTransformer;
 import com.mydegree.renty.service.model.EntertainmentPlaceDTO;
 import com.mydegree.renty.service.model.EntertainmentPlaceInputDTO;
+import com.mydegree.renty.utils.Constants;
 import com.mydegree.renty.utils.ServicesUtils;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,8 +39,9 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
                                          IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository,
                                          SecretKey secretKey,
                                          IRoleRepository roleRepository,
-                                         PasswordEncoder passwordEncoder) {
-        super(userRepository, userDetailsRepository, roleRepository, entertainmentActivityRepository, passwordEncoder);
+                                         PasswordEncoder passwordEncoder,
+                                         IReservationRepository reservationRepository) {
+        super(userRepository, userDetailsRepository, roleRepository, entertainmentActivityRepository, passwordEncoder, reservationRepository);
         this.addressRepository = addressRepository;
         this.entertainmentPlaceRepository = entertainmentPlaceRepository;
         this.entertainmentActivityPlaceRepository = entertainmentActivityPlaceRepository;
@@ -57,7 +58,7 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
     public List<EntertainmentPlaceDTO> findAllOwnedEntertainmentPlaces(String token) {
         final Claims claims = ServicesUtils.getClaimsFromTokenUsingSecretKey(token, secretKey);
         final Iterable<EntertainmentPlaceEntity> entities =
-                entertainmentPlaceRepository.findEntertainmentPlaceEntitiesByUserDetailsId(Long.parseLong(claims.get("userId").toString()));
+                entertainmentPlaceRepository.findEntertainmentPlaceEntitiesByUserDetailsId(Long.parseLong(claims.get(Constants.userId).toString()));
         return EntertainmentPlaceTransformer.transformEntertainmentPlaceEntities(entities);
     }
 
@@ -141,7 +142,7 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
 
     private EntertainmentPlaceEntity createEntertainmentPlaceEntityFromInput(final EntertainmentPlaceInputDTO entertainmentPlace) {
         final EntertainmentPlaceEntity entertainmentPlaceEntity = new EntertainmentPlaceEntity();
-        entertainmentPlaceEntity.setName(entertainmentPlaceEntity.getName());
+        entertainmentPlaceEntity.setName(entertainmentPlace.getName());
         entertainmentPlaceEntity.setDescription(entertainmentPlace.getDescription());
         entertainmentPlaceEntity.setProfileImage(entertainmentPlace.getProfileImage());
         entertainmentPlaceEntity.setAddress(AddressTransformer.transformAddress(entertainmentPlace.getAddress()));

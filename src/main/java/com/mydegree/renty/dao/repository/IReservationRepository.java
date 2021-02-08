@@ -10,8 +10,8 @@ import java.sql.Date;
 
 @Repository
 public interface IReservationRepository extends CrudRepository<ReservationEntity, Long> {
-    Iterable<ReservationEntity> findReservationEntitiesByUserDetailsIdAndReservationDateIsGreaterThan(final Long userDetailsId,
-                                                                                                      final Date date);
+    Iterable<ReservationEntity> findReservationEntitiesByUserDetailsIdAndReservationDateIsGreaterThanEqualOrderByReservationDateAsc(final Long userDetailsId,
+                                                                                                                                    final Date date);
 
     Iterable<ReservationEntity> findReservationEntitiesByReservationDateGreaterThan(final Date date);
 
@@ -19,4 +19,6 @@ public interface IReservationRepository extends CrudRepository<ReservationEntity
                                                                                                             final Date date,
                                                                                                             final Integer hour);
     Iterable<ReservationEntity> findReservationEntitiesByEntertainmentActivityPlaceAndReservationDateIsGreaterThanEqual(final EntertainmentActivityPlaceEntity entertainmentActivityPlaceEntity, final Date date);
+    Iterable<ReservationEntity> findReservationEntitiesByEntertainmentActivityPlace_EntertainmentPlace_UserDetailsIdAndReservationDateIsGreaterThanEqual(final Long id, final Date date);
+    Iterable<ReservationEntity> findReservationEntitiesByUserDetailsId(final Long id);
 }

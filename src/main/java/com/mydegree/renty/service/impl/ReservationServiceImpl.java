@@ -11,10 +11,14 @@ import com.mydegree.renty.service.helper.EntertainmentActivityPlaceIdTransformer
 import com.mydegree.renty.service.model.EntertainmentActivityPlaceIdDTO;
 import com.mydegree.renty.service.model.ReservationInputDTO;
 import com.mydegree.renty.service.model.ReservationOutputDTO;
+import com.mydegree.renty.utils.Constants;
 import com.mydegree.renty.utils.DateUtils;
+import com.mydegree.renty.utils.ServicesUtils;
+import io.jsonwebtoken.Claims;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +28,16 @@ import java.util.Optional;
 public class ReservationServiceImpl extends AbstractService implements IReservationService {
     private final IReservationRepository reservationRepository;
     private final IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository;
+    private final SecretKey secretKey;
 
     public ReservationServiceImpl(IUserRepository userRepository, IUserDetailsRepository userDetailsRepository,
                                   IRoleRepository roleRepository, IEntertainmentActivityRepository entertainmentActivityRepository,
                                   PasswordEncoder passwordEncoder, IReservationRepository reservationRepository,
-                                  IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository) {
-        super(userRepository, userDetailsRepository, roleRepository, entertainmentActivityRepository, passwordEncoder);
+                                  IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository, SecretKey secretKey) {
+        super(userRepository, userDetailsRepository, roleRepository, entertainmentActivityRepository, passwordEncoder, reservationRepository);
         this.reservationRepository = reservationRepository;
         this.entertainmentActivityPlaceRepository = entertainmentActivityPlaceRepository;
+        this.secretKey = secretKey;
     }
 
     @Override
@@ -66,9 +72,11 @@ public class ReservationServiceImpl extends AbstractService implements IReservat
     }
 
     @Override
-    public List<ReservationOutputDTO> findAllActiveReservationsByUserId(Long id) {
+    public List<ReservationOutputDTO> findAllActiveReservationsFromRenter(String token) {
+        final Claims claims = ServicesUtils.getClaimsFromTokenUsingSecretKey(token, secretKey);
+        final Long id = ServicesUtils.convertStringToLong(claims.get(Constants.userId).toString());
         final Iterable<ReservationEntity> reservationEntities =
-                reservationRepository.findReservationEntitiesByUserDetailsIdAndReservationDateIsGreaterThan(id, DateUtils.getCurrentDate());
+                reservationRepository.findReservationEntitiesByUserDetailsIdAndReservationDateIsGreaterThanEqualOrderByReservationDateAsc(id, DateUtils.getCurrentDate());
         return prepareReservationsForOutput(reservationEntities);
     }
 
@@ -90,6 +98,16 @@ public class ReservationServiceImpl extends AbstractService implements IReservat
         final EntertainmentActivityPlaceEntity entertainmentActivityPlaceEntity = findEntertainmentActivityPlace(entertainmentActivityPlaceId);
         final Iterable<ReservationEntity> reservationEntities =
                 reservationRepository.findReservationEntitiesByEntertainmentActivityPlaceAndReservationDateIsGreaterThanEqual(entertainmentActivityPlaceEntity, DateUtils.getCurrentDate());
+        return prepareReservationsForOutput(reservationEntities);
+    }
+
+    @Override
+    public List<ReservationOutputDTO> findAllActiveReservationsFromAnOwner(String token) {
+        final Claims claims = ServicesUtils.getClaimsFromTokenUsingSecretKey(token, secretKey);
+        final Long id = ServicesUtils.convertStringToLong(claims.get(Constants.userId).toString());
+        final Iterable<ReservationEntity> reservationEntities =
+                reservationRepository.findReservationEntitiesByEntertainmentActivityPlace_EntertainmentPlace_UserDetailsIdAndReservationDateIsGreaterThanEqual(id,
+                        DateUtils.getCurrentDate());
         return prepareReservationsForOutput(reservationEntities);
     }
 

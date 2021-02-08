@@ -5,6 +5,7 @@ import com.mydegree.renty.service.abstracts.IReservationService;
 import com.mydegree.renty.service.impl.UserServiceImpl;
 import com.mydegree.renty.service.model.EntertainmentPlaceDTO;
 import com.mydegree.renty.service.model.EntertainmentPlaceInputDTO;
+import com.mydegree.renty.service.model.ReservationOutputDTO;
 import com.mydegree.renty.utils.Constants;
 import com.mydegree.renty.utils.ServicesUtils;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,12 @@ public class OwnerController {
     private List<EntertainmentPlaceDTO> findAllOwnedEntertainmentPlaces(@RequestHeader(name = "Authorization") String authorization) {
         final String token = authorization.split(" ")[1];
         return entertainmentPlaceService.findAllOwnedEntertainmentPlaces(token);
+    }
+
+    @GetMapping("/all-active-reservations-from-owner")
+    private List<ReservationOutputDTO> findAllActiveReservationsFromAnOwner(@RequestHeader(name = "Authorization") String authorization) {
+        final String token = authorization.split(" ")[1];
+        return reservationService.findAllActiveReservationsFromAnOwner(token);
     }
 
     @DeleteMapping("/delete-entertainment-place")

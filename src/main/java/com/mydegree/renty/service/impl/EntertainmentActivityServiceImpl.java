@@ -24,8 +24,9 @@ public class EntertainmentActivityServiceImpl extends AbstractService implements
                                             IRoleRepository roleRepository,
                                             IEntertainmentActivityRepository entertainmentActivityRepository,
                                             PasswordEncoder passwordEncoder,
-                                            IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository) {
-        super(userRepository, userDetailsRepository, roleRepository, entertainmentActivityRepository, passwordEncoder);
+                                            IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository,
+                                            IReservationRepository reservationRepository) {
+        super(userRepository, userDetailsRepository, roleRepository, entertainmentActivityRepository, passwordEncoder, reservationRepository);
         this.entertainmentActivityPlaceRepository = entertainmentActivityPlaceRepository;
     }
 

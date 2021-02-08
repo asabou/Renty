@@ -1,12 +1,10 @@
 package com.mydegree.renty.service.abstracts;
 
 import com.mydegree.renty.dao.entity.EntertainmentActivityEntity;
+import com.mydegree.renty.dao.entity.ReservationEntity;
 import com.mydegree.renty.dao.entity.UserDetailsEntity;
 import com.mydegree.renty.dao.entity.UserEntity;
-import com.mydegree.renty.dao.repository.IEntertainmentActivityRepository;
-import com.mydegree.renty.dao.repository.IRoleRepository;
-import com.mydegree.renty.dao.repository.IUserDetailsRepository;
-import com.mydegree.renty.dao.repository.IUserRepository;
+import com.mydegree.renty.dao.repository.*;
 import com.mydegree.renty.exceptions.BadRequestException;
 import com.mydegree.renty.exceptions.InternalServerErrorException;
 import com.mydegree.renty.exceptions.NotFoundException;
@@ -30,16 +28,18 @@ public abstract class AbstractService implements IAbstractService {
     protected final IRoleRepository roleRepository;
     protected final IEntertainmentActivityRepository entertainmentActivityRepository;
     protected final PasswordEncoder passwordEncoder;
+    protected final IReservationRepository reservationRepository;
 
     public AbstractService(IUserRepository userRepository, IUserDetailsRepository userDetailsRepository,
                            IRoleRepository roleRepository,
                            IEntertainmentActivityRepository entertainmentActivityRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder, IReservationRepository reservationRepository) {
         this.userRepository = userRepository;
         this.userDetailsRepository = userDetailsRepository;
         this.roleRepository = roleRepository;
         this.entertainmentActivityRepository = entertainmentActivityRepository;
         this.passwordEncoder = passwordEncoder;
+        this.reservationRepository = reservationRepository;
     }
 
     /**
@@ -65,6 +65,7 @@ public abstract class AbstractService implements IAbstractService {
         if (userEntity.isEmpty()) {
             throwNotFoundException("Cannot find user with id: " + id);
         }
+        deleteAllDependentEntitiesForUserId(id);
         userRepository.delete(userEntity.get());
     }
 
@@ -94,7 +95,12 @@ public abstract class AbstractService implements IAbstractService {
         if (userEntity == null) {
             throwNotFoundException("User with username: " + username + " does not exists!");
         }
-        userDetailsRepository.save(UserDetailsTransformer.transformUserDetails(userDetails));
+        final UserDetailsEntity userDetailsEntity = userEntity.getUserDetails();
+        userDetailsEntity.setFirstName(userDetails.getFirstName());
+        userDetailsEntity.setLastName(userDetails.getLastName());
+        userDetailsEntity.setEmail(userDetails.getEmail());
+        userDetailsEntity.setTelNumber(userDetails.getTelNumber());
+        userDetailsRepository.save(userDetailsEntity);
     }
 
     @Override
@@ -136,6 +142,15 @@ public abstract class AbstractService implements IAbstractService {
     @Override
     public void throwInternalServerErrorException(String message) {
         throw new InternalServerErrorException(message);
+    }
+
+    private void deleteAllDependentEntitiesForUserId(final Long id) {
+        deleteReservationsByUserId(id);
+    }
+
+    private void deleteReservationsByUserId(final Long userId) {
+        final Iterable<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserDetailsId(userId);
+        reservationRepository.deleteAll(reservations);
     }
 
 }

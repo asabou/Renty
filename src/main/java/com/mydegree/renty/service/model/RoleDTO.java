@@ -12,6 +12,7 @@ import lombok.ToString;
 public class RoleDTO {
     private Long id;
     private String role;
+    private String description;
     public RoleDTO(String role) {
         this.role = role;
     }

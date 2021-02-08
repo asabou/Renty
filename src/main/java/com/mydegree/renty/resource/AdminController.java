@@ -8,7 +8,6 @@ import com.mydegree.renty.service.model.EntertainmentActivityDTO;
 import com.mydegree.renty.service.model.RoleDTO;
 import com.mydegree.renty.service.model.UserDTO;
 import com.mydegree.renty.service.model.UserDetailsDTO;
-import com.mydegree.renty.utils.Constants;
 import com.mydegree.renty.utils.ServicesUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,31 +41,17 @@ public class AdminController {
         userService.createOwnerUser(userDetailsDTO);
     }
 
-    @DeleteMapping("/delete-account")
-    private void deleteAccount(@RequestParam(name = "id") String id, @RequestParam(name = "username") String username) {
-        if (!ServicesUtils.isStringNullOrEmpty(username)) {
-            userService.deleteAccountByUsername(username);
-        } else {
-            if (!ServicesUtils.isStringNullOrEmpty(id)) {
-                userService.deleteAccountByUserId(ServicesUtils.convertStringToLong(id));
-            } else {
-                userService.throwBadRequestException(Constants.INVALID_QUERY_PARAMS);
-            }
+    @DeleteMapping("/delete-account/{id}")
+    private void deleteAccount(@PathVariable("id") String id) {
+        if (ServicesUtils.isStringNullOrEmpty(id)) {
+            userService.throwBadRequestException("Invalid account id!");
         }
+        userService.deleteAccountByUserId(ServicesUtils.convertStringToLong(id));
     }
 
-    @PutMapping("/update-roles-for-user")
-    private void updateRoleForUser(@RequestParam(name = "username") String username,
-                                   @RequestParam(name = "id") String id, @RequestBody List<RoleDTO> roles) {
-        if (!ServicesUtils.isStringNullOrEmpty(username)) {
-            adminService.updateRolesForUsername(username, roles);
-        } else {
-            if (!ServicesUtils.isStringNullOrEmpty(id)) {
-                adminService.updateRolesForUserId(ServicesUtils.convertStringToLong(id), roles);
-            } else {
-                userService.throwBadRequestException(Constants.INVALID_QUERY_PARAMS);
-            }
-        }
+    @PostMapping("/update-roles-for-user")
+    private void updateRoleForUser(@RequestBody UserDetailsDTO userDetails) {
+        adminService.updateRolesForUser(userDetails);
     }
 
     @GetMapping("/all-users")
@@ -87,5 +72,10 @@ public class AdminController {
     @GetMapping("/all-roles")
     private List<RoleDTO> getAllRoles() {
         return roleService.findAllRoles();
+    }
+
+    @GetMapping("/user-by-id/{id}")
+    private UserDetailsDTO findUserById(@PathVariable("id") String id) {
+        return userService.findUserByUserId(ServicesUtils.convertStringToLong(id));
     }
 }

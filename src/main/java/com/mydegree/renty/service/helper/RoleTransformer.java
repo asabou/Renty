@@ -12,11 +12,13 @@ public class RoleTransformer {
     private static void fillRole(final RoleEntity input, final RoleDTO target) {
         target.setId(input.getId());
         target.setRole(input.getRole());
+        target.setDescription(input.getDescription());
     }
 
     private static void fillRoleEntity(final RoleDTO input, final RoleEntity target) {
         target.setId(input.getId());
         target.setRole(input.getRole());
+        target.setDescription(input.getDescription());
     }
 
     public static RoleDTO transformRoleEntity(final RoleEntity input) {

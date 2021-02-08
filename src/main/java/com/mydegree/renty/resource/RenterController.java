@@ -46,9 +46,15 @@ public class RenterController {
         reservationService.cancelReservation(id);
     }
 
-    @GetMapping("/all-active-reservations/{id}")
-    private List<ReservationOutputDTO> findAllActiveReservations(@PathVariable("id") Long id) {
-        return reservationService.findAllActiveReservationsByUserId(id);
+    @GetMapping("/all-active-reservations")
+    private List<ReservationOutputDTO> findAllActiveReservations(@RequestHeader(name = "Authorization") String authorization) {
+        final String token = authorization.split(" ")[1];
+        return reservationService.findAllActiveReservationsFromRenter(token);
+    }
+
+    @GetMapping("/get-all-active-reservations")
+    private List<ReservationOutputDTO> findAllActiveReservations() {
+        return reservationService.findAllActiveReservations();
     }
 
     @GetMapping("/active-reservations-for-activity-place")

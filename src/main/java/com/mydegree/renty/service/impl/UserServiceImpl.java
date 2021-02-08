@@ -3,10 +3,7 @@ package com.mydegree.renty.service.impl;
 import com.google.common.collect.Sets;
 import com.mydegree.renty.dao.entity.UserDetailsEntity;
 import com.mydegree.renty.dao.entity.UserEntity;
-import com.mydegree.renty.dao.repository.IEntertainmentActivityRepository;
-import com.mydegree.renty.dao.repository.IRoleRepository;
-import com.mydegree.renty.dao.repository.IUserDetailsRepository;
-import com.mydegree.renty.dao.repository.IUserRepository;
+import com.mydegree.renty.dao.repository.*;
 import com.mydegree.renty.service.abstracts.AbstractService;
 import com.mydegree.renty.service.abstracts.IUserService;
 import com.mydegree.renty.service.helper.RoleTransformer;
@@ -31,8 +28,9 @@ public class UserServiceImpl extends AbstractService implements IUserService {
                            IUserDetailsRepository userDetailsRepository,
                            IRoleRepository roleRepository,
                            IEntertainmentActivityRepository entertainmentActivityRepository,
-                           PasswordEncoder passwordEncoder, SecretKey secretKey) {
-        super(userRepository, userDetailsRepository, roleRepository, entertainmentActivityRepository, passwordEncoder);
+                           PasswordEncoder passwordEncoder, SecretKey secretKey,
+                           IReservationRepository reservationRepository) {
+        super(userRepository, userDetailsRepository, roleRepository, entertainmentActivityRepository, passwordEncoder, reservationRepository);
         this.secretKey = secretKey;
     }
 

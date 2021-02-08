@@ -51,9 +51,9 @@ public class BootStrapData implements CommandLineRunner {
 
     private void saveRoles() {
         final RoleEntity adminRole = new RoleEntity(), ownerRole = new RoleEntity(), renterRole = new RoleEntity();
-        adminRole.setRole("ADMIN");
-        ownerRole.setRole("OWNER");
-        renterRole.setRole("RENTER");
+        adminRole.setRole("ADMIN"); adminRole.setDescription("The users with this role can manage the app");
+        ownerRole.setRole("OWNER"); ownerRole.setDescription("The users with this role can manage their entertainment places");
+        renterRole.setRole("RENTER"); renterRole.setDescription("The users with this role can rent entertainment places");
 
         roleRepository.save(adminRole);
         roleRepository.save(ownerRole);

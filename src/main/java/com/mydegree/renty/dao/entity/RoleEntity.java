@@ -21,6 +21,9 @@ public class RoleEntity implements GrantedAuthority {
     @Column(name = "role", unique = true, nullable = false)
     private String role;
 
+    @Column(name = "description", nullable = false)
+    private String description;
+
     @Transient
     @Override
     public String getAuthority() {
