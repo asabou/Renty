@@ -7,7 +7,10 @@ import com.mydegree.renty.service.abstracts.AbstractService;
 import com.mydegree.renty.service.abstracts.IEntertainmentActivityService;
 import com.mydegree.renty.service.helper.EntertainmentActivityTransformer;
 import com.mydegree.renty.service.model.EntertainmentActivityDTO;
+import com.mydegree.renty.service.model.EntertainmentActivityInputDTO;
 import com.mydegree.renty.service.model.EntertainmentActivityOutputDTO;
+import com.mydegree.renty.service.model.EntertainmentPlaceInputDTO;
+import com.mydegree.renty.utils.Constants;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -58,9 +61,56 @@ public class EntertainmentActivityServiceImpl extends AbstractService implements
         return EntertainmentActivityTransformer.transformEntertainmentActivityEntity(byId.get());
     }
 
+    @Override
+    public void updateEntertainmentActivityForPlace(EntertainmentActivityInputDTO entertainmentActivityInputDTO) {
+        EntertainmentActivityPlaceEntity byId = entertainmentActivityPlaceRepository.findEntertainmentActivityPlaceEntityByEntertainmentActivityIdAndEntertainmentPlaceId(entertainmentActivityInputDTO.getEntertainmentActivityId(), entertainmentActivityInputDTO.getEntertainmentPlaceId());
+        if (byId == null) {
+            throwNotFoundException(Constants.ENTITY_NOT_FOUND);
+        }
+        byId.setPricePerHour(entertainmentActivityInputDTO.getPrice());
+        byId.setMaxPeopleAllowed(entertainmentActivityInputDTO.getMaxPeopleAllowed());
+        entertainmentActivityPlaceRepository.save(byId);
+    }
+
+    @Override
+    public EntertainmentActivityInputDTO findEntertainmentActivityForPlace(EntertainmentActivityInputDTO entertainmentActivityInput) {
+        EntertainmentActivityPlaceEntity byId =
+                entertainmentActivityPlaceRepository.findEntertainmentActivityPlaceEntityByEntertainmentActivityIdAndEntertainmentPlaceId(entertainmentActivityInput.getEntertainmentActivityId(), entertainmentActivityInput.getEntertainmentPlaceId());
+        if (byId == null) {
+            throwNotFoundException(Constants.ENTITY_NOT_FOUND);
+        }
+        final EntertainmentActivityInputDTO entAct = new EntertainmentActivityInputDTO();
+        entAct.setEntertainmentPlaceId(entertainmentActivityInput.getEntertainmentPlaceId());
+        entAct.setEntertainmentActivityId(entertainmentActivityInput.getEntertainmentActivityId());
+        entAct.setPrice(byId.getPricePerHour());
+        entAct.setMaxPeopleAllowed(byId.getMaxPeopleAllowed());
+        return entAct;
+    }
+
+    @Override
+    public void deleteEntertainmentActivityForPlace(EntertainmentActivityInputDTO entertainmentActivityInput) {
+        EntertainmentActivityPlaceEntity byId =
+                entertainmentActivityPlaceRepository.findEntertainmentActivityPlaceEntityByEntertainmentActivityIdAndEntertainmentPlaceId(entertainmentActivityInput.getEntertainmentActivityId(), entertainmentActivityInput.getEntertainmentPlaceId());
+        if (byId == null) {
+            throwNotFoundException(Constants.ENTITY_NOT_FOUND);
+        }
+        deleteAllDependentEntitiesForActivityPlace(entertainmentActivityInput);
+        entertainmentActivityPlaceRepository.delete(byId);
+    }
+
+    private void deleteAllDependentEntitiesForActivityPlace(EntertainmentActivityInputDTO entertainmentActivityInput) {
+        EntertainmentActivityPlaceEntity byId =
+                entertainmentActivityPlaceRepository.findEntertainmentActivityPlaceEntityByEntertainmentActivityIdAndEntertainmentPlaceId(entertainmentActivityInput.getEntertainmentActivityId(), entertainmentActivityInput.getEntertainmentPlaceId());
+        if (byId != null) {
+            entertainmentActivityPlaceRepository.delete(byId);
+        }
+    }
+
     private List<EntertainmentActivityOutputDTO> prepareEntertainmentActivityPlaceForOutput(final Iterable<EntertainmentActivityPlaceEntity> entities) {
         final List<EntertainmentActivityOutputDTO> list = new ArrayList<>();
-        entities.forEach((entity) -> list.add(createEntertainmentActivityOutputFromEntity(entity)));
+        entities.forEach((entity) -> {
+            list.add(createEntertainmentActivityOutputFromEntity(entity));
+        });
         return list;
     }
 

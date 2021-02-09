@@ -1,9 +1,6 @@
 package com.mydegree.renty.service.impl;
 
-import com.mydegree.renty.dao.entity.EntertainmentActivityEntity;
-import com.mydegree.renty.dao.entity.EntertainmentActivityPlaceEntity;
-import com.mydegree.renty.dao.entity.EntertainmentPlaceEntity;
-import com.mydegree.renty.dao.entity.UserDetailsEntity;
+import com.mydegree.renty.dao.entity.*;
 import com.mydegree.renty.dao.repository.*;
 import com.mydegree.renty.service.abstracts.AbstractService;
 import com.mydegree.renty.service.abstracts.IEntertainmentPlaceService;
@@ -95,20 +92,12 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
     }
 
     @Override
-    public void deleteEntertainmentPlaceByName(String name) {
-        final EntertainmentPlaceEntity entity = entertainmentPlaceRepository.findEntertainmentPlaceEntityByName(name);
-        if (entity == null) {
-            throwNotFoundException("Entertainment place not found!");
-        }
-        entertainmentPlaceRepository.delete(entity);
-    }
-
-    @Override
     public void deleteEntertainmentPlaceById(Long id) {
         final Optional<EntertainmentPlaceEntity> entity = entertainmentPlaceRepository.findById(id);
         if (entity.isEmpty()) {
-            throwNotFoundException("Entertainment place not found!");
+            throwNotFoundException(Constants.ENT_PLACE_NOT_FOUND);
         }
+        deleteAllDependentEntitiesForEntertainmentPlace(id);
         entertainmentPlaceRepository.delete(entity.get());
     }
 
@@ -116,15 +105,35 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
     public EntertainmentPlaceDTO findById(Long id) {
         final Optional<EntertainmentPlaceEntity> entity = entertainmentPlaceRepository.findById(id);
         if (entity.isEmpty()) {
-            throwNotFoundException("Entertainment place not found!");
+            throwNotFoundException(Constants.ENT_PLACE_NOT_FOUND);
         }
         return EntertainmentPlaceTransformer.transformEntertainmentPlaceEntity(entity.get());
+    }
+
+    @Override
+    public void updateEntertainmentPlace(EntertainmentPlaceDTO entertainmentPlaceDTO) {
+        final Optional<EntertainmentPlaceEntity> entityOptional = entertainmentPlaceRepository.findById(entertainmentPlaceDTO.getId());
+        if (entityOptional.isEmpty()) {
+            throwNotFoundException(Constants.ENT_PLACE_NOT_FOUND);
+        }
+        final EntertainmentPlaceEntity entity = entityOptional.get();
+        entity.setName(entertainmentPlaceDTO.getName());
+        entity.setDescription(entity.getDescription());
+        entity.setProfileImage(entertainmentPlaceDTO.getProfileImage());
+        entity.setAddress(AddressTransformer.transformAddress(entertainmentPlaceDTO.getAddress()));
+        entertainmentPlaceRepository.save(entity);
+    }
+
+    private void deleteAllDependentEntitiesForEntertainmentPlace(final Long id) {
+        final Iterable<ReservationEntity> entities =
+                reservationRepository.findReservationEntitiesByEntertainmentActivityPlace_EntertainmentPlaceId(id);
+        reservationRepository.deleteAll(entities);
     }
 
     private UserDetailsEntity findUserDetailsById(final Long id) {
         Optional<UserDetailsEntity> user = userDetailsRepository.findById(id);
         if (user.isEmpty()) {
-            throwNotFoundException("User not found!");
+            throwNotFoundException(Constants.USER_NOT_FOUND);
         }
         return user.get();
     }
@@ -158,6 +167,8 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
             final EntertainmentActivityPlaceEntity entertainmentActivityPlaceEntity = new EntertainmentActivityPlaceEntity();
             entertainmentActivityPlaceEntity.setEntertainmentActivity(entertainmentActivityEntity);
             entertainmentActivityPlaceEntity.setEntertainmentPlace(entertainmentPlaceEntity);
+            entertainmentActivityPlaceEntity.setMaxPeopleAllowed(entertainmentPlace.getMaxPeopleAllowed());
+            entertainmentActivityPlaceEntity.setPricePerHour(entertainmentPlace.getPricePerHour());
             set.add(entertainmentActivityPlaceEntity);
         }
         return set;

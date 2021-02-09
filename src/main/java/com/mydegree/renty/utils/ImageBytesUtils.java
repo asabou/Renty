@@ -2,9 +2,7 @@ package com.mydegree.renty.utils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 
 public class ImageBytesUtils {
     private final String filename;
@@ -13,15 +11,33 @@ public class ImageBytesUtils {
         this.filename = Constants.imagePath + filename;
     }
 
-    public byte[] extractBytes()  throws Exception {
-        BufferedImage originalImage = ImageIO.read(new File(filename));
+    public byte[] extractBytes() {
+        BufferedImage originalImage = null;
+        try {
+            originalImage = ImageIO.read(new File(filename));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        boolean jpg = ImageIO.write(originalImage, "jpg", baos);
+        try {
+            boolean jpg = ImageIO.write(originalImage, "jpg", baos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return baos.toByteArray();
     }
 
-    public void convertToJpg(byte[] bytes) throws Exception {
-        FileOutputStream fos = new FileOutputStream(filename);
-        fos.write(bytes);
+    public void convertToJpg(byte[] bytes) {
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(filename);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            fos.write(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

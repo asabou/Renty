@@ -8,6 +8,7 @@ import com.mydegree.renty.service.abstracts.IUserService;
 import com.mydegree.renty.service.model.*;
 import com.mydegree.renty.utils.Base64Utils;
 import com.mydegree.renty.utils.DateUtils;
+import com.mydegree.renty.utils.ImageBytesUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,7 @@ public class BootStrapData implements CommandLineRunner {
     private final IEntertainmentPlaceRepository entertainmentPlaceRepository;
     private final IReservationRepository reservationRepository;
     private final IReservationService reservationService;
+    private final IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository;
 
     public BootStrapData(IRoleRepository roleRepository,
                          IUserDetailsRepository userDetailsRepository, IUserService userService,
@@ -37,7 +39,8 @@ public class BootStrapData implements CommandLineRunner {
                          IEntertainmentPlaceService entertainmentPlaceService,
                          IEntertainmentPlaceRepository entertainmentPlaceRepository,
                          IReservationRepository reservationRepository,
-                         IReservationService reservationService) {
+                         IReservationService reservationService,
+                         IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository) {
         this.roleRepository = roleRepository;
         this.userDetailsRepository = userDetailsRepository;
         this.userService = userService;
@@ -47,6 +50,7 @@ public class BootStrapData implements CommandLineRunner {
         this.entertainmentPlaceRepository = entertainmentPlaceRepository;
         this.reservationRepository = reservationRepository;
         this.reservationService = reservationService;
+        this.entertainmentActivityPlaceRepository = entertainmentActivityPlaceRepository;
     }
 
     private void saveRoles() {
@@ -79,9 +83,13 @@ public class BootStrapData implements CommandLineRunner {
 
     private void saveEntertainmentActivities() {
         final EntertainmentActivityDTO football = new EntertainmentActivityDTO(); football.setName("Football");
+        football.setDescription("Description for football");
         final EntertainmentActivityDTO basket = new EntertainmentActivityDTO(); basket.setName("Basket");
+        basket.setDescription("Description for basket");
         final EntertainmentActivityDTO handball = new EntertainmentActivityDTO(); handball.setName("Handball");
+        handball.setDescription("Description for handball");
         final EntertainmentActivityDTO tennis = new EntertainmentActivityDTO(); tennis.setName("Tennis");
+        tennis.setDescription("Description for tennis");
         entertainmentActivityService.saveEntertainmentActivity(football);
         entertainmentActivityService.saveEntertainmentActivity(basket);
         entertainmentActivityService.saveEntertainmentActivity(handball);
@@ -110,6 +118,7 @@ public class BootStrapData implements CommandLineRunner {
         entertainmentPlaceInputDTO1.setEntertainmentActivities(Arrays.asList("Football", "Handball", "Tennis"));
         entertainmentPlaceInputDTO1.setPricePerHour(50.0);
         entertainmentPlaceInputDTO1.setMaxPeopleAllowed(12);
+        entertainmentPlaceInputDTO1.setProfileImage(new ImageBytesUtils("entplace2.jpg").extractBytes());
         addressDTO1.setNumber("12");
         addressDTO1.setStreet("Street1");
         addressDTO1.setCounty("County1");
@@ -125,6 +134,7 @@ public class BootStrapData implements CommandLineRunner {
         entertainmentPlaceInputDTO2.setEntertainmentActivities(Arrays.asList("Football", "Tennis"));
         entertainmentPlaceInputDTO2.setPricePerHour(50.0);
         entertainmentPlaceInputDTO2.setMaxPeopleAllowed(12);
+        entertainmentPlaceInputDTO2.setProfileImage(new ImageBytesUtils("entplace3.jpg").extractBytes());
         addressDTO1.setNumber("11");
         addressDTO1.setStreet("Street2");
         addressDTO1.setCounty("County2");
