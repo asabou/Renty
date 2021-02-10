@@ -15,4 +15,5 @@ public interface IEntertainmentActivityService {
     void updateEntertainmentActivityForPlace(final EntertainmentActivityInputDTO entertainmentActivityInputDTO);
     EntertainmentActivityInputDTO findEntertainmentActivityForPlace(final EntertainmentActivityInputDTO entertainmentActivityInput);
     void deleteEntertainmentActivityForPlace(final EntertainmentActivityInputDTO entertainmentActivityInput);
+    List<EntertainmentActivityDTO> findAll();
 }

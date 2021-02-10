@@ -65,11 +65,6 @@ public class RenterController {
         return reservationService.findAllActiveReservationsByActivityAndPlace(ids);
     }
 
-    @GetMapping("/search-entertainment-place/{filter}")
-    private List<EntertainmentPlaceDTO> searchEntertainmentPlace(@PathVariable("filter") String filter) {
-        return entertainmentPlaceService.findAllEntertainmentPlacesByAddressOrNameOrDescriptionOrUserDetailsFirstNameOrUserDetailsLastName(filter);
-    }
-
     @GetMapping("/find-entertainment-place/{id}")
     private EntertainmentPlaceDTO findEntertainmentPlaceById(@PathVariable("id") Long id) {
         return entertainmentPlaceService.findById(id);

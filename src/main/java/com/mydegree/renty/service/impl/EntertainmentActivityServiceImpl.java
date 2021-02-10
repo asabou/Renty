@@ -98,6 +98,12 @@ public class EntertainmentActivityServiceImpl extends AbstractService implements
         entertainmentActivityPlaceRepository.delete(byId);
     }
 
+    @Override
+    public List<EntertainmentActivityDTO> findAll() {
+        final Iterable<EntertainmentActivityEntity> entities = entertainmentActivityRepository.findAll();
+        return EntertainmentActivityTransformer.transformEntertainmentActivityEntities(entities);
+    }
+
     private void deleteAllDependentEntitiesForActivityPlace(EntertainmentActivityInputDTO entertainmentActivityInput) {
         EntertainmentActivityPlaceEntity byId =
                 entertainmentActivityPlaceRepository.findEntertainmentActivityPlaceEntityByEntertainmentActivityIdAndEntertainmentPlaceId(entertainmentActivityInput.getEntertainmentActivityId(), entertainmentActivityInput.getEntertainmentPlaceId());

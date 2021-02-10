@@ -22,9 +22,8 @@ public class ServicesUtils {
         if (string == null) {
             return "%";
         }
-        return string.replaceAll("[ _?,:']", "%")
-                .replaceAll("[A-Z]+", "%")
-                .replaceAll("[0-9]+", "%");
+        return "%" + string.replaceAll("[ _?,:']", "%")
+                .replaceAll("[A-Z]+", "%") + "%";
     }
 
     public static boolean isStringNullOrEmpty(final String string) {

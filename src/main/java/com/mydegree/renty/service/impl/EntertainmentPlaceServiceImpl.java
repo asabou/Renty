@@ -59,20 +59,6 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
         return EntertainmentPlaceTransformer.transformEntertainmentPlaceEntities(entities);
     }
 
-    @Override
-    public List<EntertainmentPlaceDTO> findAllEntertainmentPlacesByAddressOrNameOrDescriptionOrUserDetailsFirstNameOrUserDetailsLastName(String string) {
-        final String county = ServicesUtils.wildCardParam(string);
-        final String city = ServicesUtils.wildCardParam(string);
-        final String street = ServicesUtils.wildCardParam(string);
-        final String name = ServicesUtils.wildCardParam(string);
-        final String description = ServicesUtils.wildCardParam(string);
-        final String firstName = ServicesUtils.wildCardParam(string);
-        final String lastName = ServicesUtils.wildCardParam(string);
-        final Iterable<EntertainmentPlaceEntity> entities =
-                entertainmentPlaceRepository.findEntertainmentPlaceEntitiesByAddressCountyLikeOrAddressCityLikeOrAddressStreetLikeOrNameLikeOrDescriptionLikeOrUserDetailsFirstNameLikeOrUserDetailsLastNameLike(county, city, street, name, description, firstName, lastName);
-        return EntertainmentPlaceTransformer.transformEntertainmentPlaceEntities(entities);
-    }
-
     @Transactional
     @Override
     public void saveEntertainmentPlace(EntertainmentPlaceInputDTO entertainmentPlace) {
@@ -122,6 +108,29 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
         entity.setProfileImage(entertainmentPlaceDTO.getProfileImage());
         entity.setAddress(AddressTransformer.transformAddress(entertainmentPlaceDTO.getAddress()));
         entertainmentPlaceRepository.save(entity);
+    }
+
+    @Override
+    public List<EntertainmentPlaceDTO> searchEntertainmentPlacesByName(String name) {
+        final String wildCard = ServicesUtils.wildCardParam(name);
+        final Iterable<EntertainmentPlaceEntity> entities = entertainmentPlaceRepository.findEntertainmentPlacesByName(wildCard);
+        return EntertainmentPlaceTransformer.transformEntertainmentPlaceEntities(entities);
+    }
+
+    @Override
+    public List<EntertainmentPlaceDTO> searchEntertainmentPlacesByActivity(String activity) {
+        final String wildCard = ServicesUtils.wildCardParam(activity);
+        final Iterable<EntertainmentPlaceEntity> entities = entertainmentPlaceRepository.findEntertainmentPlacesByEntertainmentActivity(wildCard);
+        return EntertainmentPlaceTransformer.transformEntertainmentPlaceEntities(entities);
+    }
+
+    @Override
+    public List<EntertainmentPlaceDTO> searchEntertainmentPlacesByNameAndActivity(String name, String activity) {
+        final String nameWildCard = ServicesUtils.wildCardParam(name);
+        final String activityWildCard = ServicesUtils.wildCardParam(activity);
+        final Iterable<EntertainmentPlaceEntity> entities = entertainmentPlaceRepository.fineEntertainmentPlacesByActivityAndName(activityWildCard,
+                nameWildCard);
+        return EntertainmentPlaceTransformer.transformEntertainmentPlaceEntities(entities);
     }
 
     private void deleteAllDependentEntitiesForEntertainmentPlace(final Long id) {
