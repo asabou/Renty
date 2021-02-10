@@ -197,5 +197,6 @@ public class BootStrapData implements CommandLineRunner {
         System.out.println(entertainmentActivityRepository.count() + " entertainment activities");
         System.out.println(entertainmentPlaceRepository.count() + " entertainment places");
         System.out.println(reservationRepository.count() + " reservations");
+        System.out.println(entertainmentActivityPlaceRepository.count() + " entertainment activities_places");
     }
 }
