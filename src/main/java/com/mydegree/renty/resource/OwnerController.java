@@ -76,4 +76,9 @@ public class OwnerController {
     private EntertainmentActivityInputDTO findEntertainmentActivityFromPlace(@RequestBody EntertainmentActivityInputDTO entertainmentActivityInputDTO) {
         return entertainmentActivityService.findEntertainmentActivityForPlace(entertainmentActivityInputDTO);
     }
+
+    @PostMapping("/create-entertainment-activity-for-place")
+    private void createEntertainmentActivityForPlace(@RequestBody EntertainmentActivityInputDTO entertainmentActivityInputDTO) {
+        entertainmentActivityService.saveEntertainmentActivityForPlace(entertainmentActivityInputDTO);
+    }
 }

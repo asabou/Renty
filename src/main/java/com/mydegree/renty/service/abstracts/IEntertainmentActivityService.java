@@ -1,9 +1,6 @@
 package com.mydegree.renty.service.abstracts;
 
-import com.mydegree.renty.service.model.EntertainmentActivityDTO;
-import com.mydegree.renty.service.model.EntertainmentActivityInputDTO;
-import com.mydegree.renty.service.model.EntertainmentActivityOutputDTO;
-import com.mydegree.renty.service.model.EntertainmentPlaceInputDTO;
+import com.mydegree.renty.service.model.*;
 
 import java.util.List;
 
@@ -16,4 +13,5 @@ public interface IEntertainmentActivityService {
     EntertainmentActivityInputDTO findEntertainmentActivityForPlace(final EntertainmentActivityInputDTO entertainmentActivityInput);
     void deleteEntertainmentActivityForPlace(final EntertainmentActivityInputDTO entertainmentActivityInput);
     List<EntertainmentActivityDTO> findAll();
+    void saveEntertainmentActivityForPlace(final EntertainmentActivityInputDTO entertainmentActivityPlaceDTO);
 }

@@ -15,4 +15,5 @@ public interface IEntertainmentPlaceService {
     List<EntertainmentPlaceDTO> searchEntertainmentPlacesByName(final String name);
     List<EntertainmentPlaceDTO> searchEntertainmentPlacesByActivity(final String activity);
     List<EntertainmentPlaceDTO> searchEntertainmentPlacesByNameAndActivity(final String name, final String activity);
+    EntertainmentPlaceDTO findEntertainmentPlaceByName(final String name);
 }

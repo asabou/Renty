@@ -64,7 +64,7 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
     public void saveEntertainmentPlace(EntertainmentPlaceInputDTO entertainmentPlace) {
         final Long userDetailsId = entertainmentPlace.getUserDetailsId();
         final UserDetailsEntity userDetails = findUserDetailsById(userDetailsId);
-        createEntertainmentActivitiesIfTheyDoesNotExist(entertainmentPlace.getEntertainmentActivities());
+        createEntertainmentActivityIfDoesNotExists(entertainmentPlace.getEntertainmentActivity());
         final EntertainmentPlaceEntity entertainmentPlaceEntity = createEntertainmentPlaceEntityFromInput(entertainmentPlace);
         entertainmentPlaceEntity.setUserDetails(userDetails);
         userDetails.getEntertainmentPlaces().add(entertainmentPlaceEntity);
@@ -133,6 +133,15 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
         return EntertainmentPlaceTransformer.transformEntertainmentPlaceEntities(entities);
     }
 
+    @Override
+    public EntertainmentPlaceDTO findEntertainmentPlaceByName(String name) {
+        final EntertainmentPlaceEntity entity = entertainmentPlaceRepository.findEntertainmentPlaceEntityByName(name);
+        if (entity == null) {
+            throwNotFoundException(Constants.ENTITY_NOT_FOUND);
+        }
+        return EntertainmentPlaceTransformer.transformEntertainmentPlaceEntity(entity);
+    }
+
     private void deleteAllDependentEntitiesForEntertainmentPlace(final Long id) {
         final Iterable<ReservationEntity> entities =
                 reservationRepository.findReservationEntitiesByEntertainmentActivityPlace_EntertainmentPlaceId(id);
@@ -147,15 +156,13 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
         return user.get();
     }
 
-    private void createEntertainmentActivitiesIfTheyDoesNotExist(final List<String> activities) {
-        activities.forEach((activity) -> {
-            final EntertainmentActivityEntity entity = entertainmentActivityRepository.findEntertainmentActivityEntityByName(activity);
-            if (entity == null) {
-                final EntertainmentActivityEntity entertainmentActivityEntity = new EntertainmentActivityEntity();
-                entertainmentActivityEntity.setName(activity);
-                entertainmentActivityRepository.save(entertainmentActivityEntity);
-            }
-        });
+    private void createEntertainmentActivityIfDoesNotExists(final String activity) {
+        final EntertainmentActivityEntity entity = entertainmentActivityRepository.findEntertainmentActivityEntityByName(activity);
+        if (entity == null) {
+            final EntertainmentActivityEntity entertainmentActivityEntity = new EntertainmentActivityEntity();
+            entertainmentActivityEntity.setName(activity);
+            entertainmentActivityRepository.save(entertainmentActivityEntity);
+        }
     }
 
     private EntertainmentPlaceEntity createEntertainmentPlaceEntityFromInput(final EntertainmentPlaceInputDTO entertainmentPlace) {
@@ -170,16 +177,15 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
     private Set<EntertainmentActivityPlaceEntity> createEntertainmentActivityPlaceEntities(final EntertainmentPlaceInputDTO entertainmentPlace,
                                                                                             final EntertainmentPlaceEntity entertainmentPlaceEntity) {
         final Set<EntertainmentActivityPlaceEntity> set = new HashSet<>();
-        for (final String activity : entertainmentPlace.getEntertainmentActivities()) {
-            final EntertainmentActivityEntity entertainmentActivityEntity =
-                    entertainmentActivityRepository.findEntertainmentActivityEntityByName(activity);
-            final EntertainmentActivityPlaceEntity entertainmentActivityPlaceEntity = new EntertainmentActivityPlaceEntity();
-            entertainmentActivityPlaceEntity.setEntertainmentActivity(entertainmentActivityEntity);
-            entertainmentActivityPlaceEntity.setEntertainmentPlace(entertainmentPlaceEntity);
-            entertainmentActivityPlaceEntity.setMaxPeopleAllowed(entertainmentPlace.getMaxPeopleAllowed());
-            entertainmentActivityPlaceEntity.setPricePerHour(entertainmentPlace.getPricePerHour());
-            set.add(entertainmentActivityPlaceEntity);
-        }
+        final String activity = entertainmentPlace.getEntertainmentActivity();
+        final EntertainmentActivityEntity entertainmentActivityEntity =
+                entertainmentActivityRepository.findEntertainmentActivityEntityByName(activity);
+        final EntertainmentActivityPlaceEntity entertainmentActivityPlaceEntity = new EntertainmentActivityPlaceEntity();
+        entertainmentActivityPlaceEntity.setEntertainmentActivity(entertainmentActivityEntity);
+        entertainmentActivityPlaceEntity.setEntertainmentPlace(entertainmentPlaceEntity);
+        entertainmentActivityPlaceEntity.setMaxPeopleAllowed(entertainmentPlace.getMaxPeopleAllowed());
+        entertainmentActivityPlaceEntity.setPricePerHour(entertainmentPlace.getPricePerHour());
+        set.add(entertainmentActivityPlaceEntity);
         return set;
     }
 }

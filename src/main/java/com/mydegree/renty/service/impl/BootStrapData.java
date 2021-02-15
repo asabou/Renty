@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-
 @Component
 public class BootStrapData implements CommandLineRunner {
 
@@ -96,6 +94,29 @@ public class BootStrapData implements CommandLineRunner {
         entertainmentActivityService.saveEntertainmentActivity(tennis);
     }
 
+    private void createAdditionalEntertainmentActivitiesForOwnerJuliaPlaces() {
+        final EntertainmentActivityInputDTO tennis1 = new EntertainmentActivityInputDTO();
+        tennis1.setPrice(40.0);
+        tennis1.setMaxPeopleAllowed(4);
+        tennis1.setEntertainmentActivityId(4L);
+        tennis1.setEntertainmentPlaceId(1L);
+        entertainmentActivityService.saveEntertainmentActivityForPlace(tennis1);
+
+        final EntertainmentActivityInputDTO handball1 = new EntertainmentActivityInputDTO();
+        handball1.setPrice(65.0);
+        handball1.setMaxPeopleAllowed(10);
+        handball1.setEntertainmentActivityId(3L);
+        handball1.setEntertainmentPlaceId(1L);
+        entertainmentActivityService.saveEntertainmentActivityForPlace(handball1);
+
+        final EntertainmentActivityInputDTO tennis2 = new EntertainmentActivityInputDTO();
+        tennis2.setPrice(40.0);
+        tennis2.setMaxPeopleAllowed(4);
+        tennis2.setEntertainmentActivityId(4L);
+        tennis2.setEntertainmentPlaceId(2L);
+        entertainmentActivityService.saveEntertainmentActivityForPlace(tennis2);
+    }
+
     private void saveOwnerJulia() {
         final UserDTO ownerJulia = new UserDTO();
         final UserDetailsDTO ownerJuliaDetails = new UserDetailsDTO();
@@ -115,7 +136,7 @@ public class BootStrapData implements CommandLineRunner {
         entertainmentPlaceInputDTO1.setName("Name1");
         entertainmentPlaceInputDTO1.setDescription("Description1");
         entertainmentPlaceInputDTO1.setAddress(addressDTO1);
-        entertainmentPlaceInputDTO1.setEntertainmentActivities(Arrays.asList("Football", "Handball", "Tennis"));
+        entertainmentPlaceInputDTO1.setEntertainmentActivity("Football");
         entertainmentPlaceInputDTO1.setPricePerHour(50.0);
         entertainmentPlaceInputDTO1.setMaxPeopleAllowed(12);
         entertainmentPlaceInputDTO1.setProfileImage(new ImageBytesUtils("entplace2.jpg").extractBytes());
@@ -123,17 +144,17 @@ public class BootStrapData implements CommandLineRunner {
         addressDTO1.setStreet("Street1");
         addressDTO1.setCounty("County1");
         addressDTO1.setCity("City1");
-
         entertainmentPlaceService.saveEntertainmentPlace(entertainmentPlaceInputDTO1);
+
         final EntertainmentPlaceInputDTO entertainmentPlaceInputDTO2 = new EntertainmentPlaceInputDTO();
         final AddressDTO addressDTO2 = new AddressDTO();
         entertainmentPlaceInputDTO2.setUserDetailsId(2L); //Iulia's id
         entertainmentPlaceInputDTO2.setName("Name2");
         entertainmentPlaceInputDTO2.setDescription("Description2");
         entertainmentPlaceInputDTO2.setAddress(addressDTO2);
-        entertainmentPlaceInputDTO2.setEntertainmentActivities(Arrays.asList("Football", "Tennis"));
-        entertainmentPlaceInputDTO2.setPricePerHour(50.0);
-        entertainmentPlaceInputDTO2.setMaxPeopleAllowed(12);
+        entertainmentPlaceInputDTO2.setEntertainmentActivity("Football");
+        entertainmentPlaceInputDTO2.setPricePerHour(60.0);
+        entertainmentPlaceInputDTO2.setMaxPeopleAllowed(10);
         entertainmentPlaceInputDTO2.setProfileImage(new ImageBytesUtils("entplace3.jpg").extractBytes());
         addressDTO1.setNumber("11");
         addressDTO1.setStreet("Street2");
@@ -191,6 +212,7 @@ public class BootStrapData implements CommandLineRunner {
             saveAdmins();
             saveOwners();
             saveRenters();
+            createAdditionalEntertainmentActivitiesForOwnerJuliaPlaces();
         }
         System.out.println(roleRepository.count() + " roles");
         System.out.println(userDetailsRepository.count() + " users");

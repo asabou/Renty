@@ -16,4 +16,5 @@ public interface IEntertainmentPlaceRepository extends CrudRepository<Entertainm
     @Query("select ep from EntertainmentPlaceEntity ep inner join  EntertainmentActivityPlaceEntity eap on ep.id = eap.entertainmentPlace.id where " +
             "lower(eap.entertainmentActivity.name) like ?1 and lower(ep.name) like ?2")
     Iterable<EntertainmentPlaceEntity> fineEntertainmentPlacesByActivityAndName(final String activity, final String name);
+    EntertainmentPlaceEntity findEntertainmentPlaceEntityByName(final String name);
 }

@@ -1,15 +1,11 @@
 package com.mydegree.renty.service.impl;
 
-import com.mydegree.renty.dao.entity.EntertainmentActivityEntity;
-import com.mydegree.renty.dao.entity.EntertainmentActivityPlaceEntity;
+import com.mydegree.renty.dao.entity.*;
 import com.mydegree.renty.dao.repository.*;
 import com.mydegree.renty.service.abstracts.AbstractService;
 import com.mydegree.renty.service.abstracts.IEntertainmentActivityService;
 import com.mydegree.renty.service.helper.EntertainmentActivityTransformer;
-import com.mydegree.renty.service.model.EntertainmentActivityDTO;
-import com.mydegree.renty.service.model.EntertainmentActivityInputDTO;
-import com.mydegree.renty.service.model.EntertainmentActivityOutputDTO;
-import com.mydegree.renty.service.model.EntertainmentPlaceInputDTO;
+import com.mydegree.renty.service.model.*;
 import com.mydegree.renty.utils.Constants;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +17,8 @@ import java.util.Optional;
 @Service
 public class EntertainmentActivityServiceImpl extends AbstractService implements IEntertainmentActivityService {
     private final IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository;
+    private final IEntertainmentPlaceRepository entertainmentPlaceRepository;
+    private final IEntertainmentActivityRepository entertainmentActivityRepository;
 
     public EntertainmentActivityServiceImpl(IUserRepository userRepository,
                                             IUserDetailsRepository userDetailsRepository,
@@ -28,9 +26,13 @@ public class EntertainmentActivityServiceImpl extends AbstractService implements
                                             IEntertainmentActivityRepository entertainmentActivityRepository,
                                             PasswordEncoder passwordEncoder,
                                             IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository,
-                                            IReservationRepository reservationRepository) {
+                                            IReservationRepository reservationRepository,
+                                            IEntertainmentPlaceRepository entertainmentPlaceRepository,
+                                            IEntertainmentActivityRepository entertainmentActivityRepository1) {
         super(userRepository, userDetailsRepository, roleRepository, entertainmentActivityRepository, passwordEncoder, reservationRepository);
         this.entertainmentActivityPlaceRepository = entertainmentActivityPlaceRepository;
+        this.entertainmentPlaceRepository = entertainmentPlaceRepository;
+        this.entertainmentActivityRepository = entertainmentActivityRepository1;
     }
 
     @Override
@@ -104,10 +106,42 @@ public class EntertainmentActivityServiceImpl extends AbstractService implements
         return EntertainmentActivityTransformer.transformEntertainmentActivityEntities(entities);
     }
 
+    @Override
+    public void saveEntertainmentActivityForPlace(EntertainmentActivityInputDTO entertainmentActivityPlaceDTO) {
+        final EntertainmentActivityPlaceEntity entertainmentActivityPlaceEntity =
+                createEntertainmentActivityPlaceEntityFromDTO(entertainmentActivityPlaceDTO);
+        entertainmentActivityPlaceRepository.save(entertainmentActivityPlaceEntity);
+    }
+
+    private EntertainmentActivityPlaceEntity createEntertainmentActivityPlaceEntityFromDTO(final EntertainmentActivityInputDTO entertainmentActivityPlaceDTO) {
+        final EntertainmentActivityPlaceEntity entity = new EntertainmentActivityPlaceEntity();
+        entity.setPricePerHour(entertainmentActivityPlaceDTO.getPrice());
+        entity.setMaxPeopleAllowed(entertainmentActivityPlaceDTO.getMaxPeopleAllowed());
+        final EntertainmentActivityPlaceId id = new EntertainmentActivityPlaceId();
+        id.setEntertainmentPlace(entertainmentActivityPlaceDTO.getEntertainmentPlaceId());
+        id.setEntertainmentActivity(entertainmentActivityPlaceDTO.getEntertainmentActivityId());
+        Optional<EntertainmentActivityPlaceEntity> entertainmentActivityPlaceEntity = entertainmentActivityPlaceRepository.findById(id);
+        if (entertainmentActivityPlaceEntity.isPresent()) {
+            throwBadRequestException(Constants.ENTITY_ALREADY_EXISTS);
+        } else {
+            Optional<EntertainmentPlaceEntity> entPlace = entertainmentPlaceRepository.findById(entertainmentActivityPlaceDTO.getEntertainmentPlaceId());
+            Optional<EntertainmentActivityEntity> act = entertainmentActivityRepository.findById(entertainmentActivityPlaceDTO.getEntertainmentActivityId());
+            if (entPlace.isEmpty() || act.isEmpty()) {
+                throwBadRequestException(Constants.ENTITY_NOT_FOUND);
+            }
+            entity.setEntertainmentActivity(act.get());
+            entity.setEntertainmentPlace(entPlace.get());
+        }
+        return entity;
+    }
+
     private void deleteAllDependentEntitiesForActivityPlace(EntertainmentActivityInputDTO entertainmentActivityInput) {
         EntertainmentActivityPlaceEntity byId =
                 entertainmentActivityPlaceRepository.findEntertainmentActivityPlaceEntityByEntertainmentActivityIdAndEntertainmentPlaceId(entertainmentActivityInput.getEntertainmentActivityId(), entertainmentActivityInput.getEntertainmentPlaceId());
         if (byId != null) {
+            final Iterable<ReservationEntity> reservationEntities =
+                    reservationRepository.findReservationEntitiesByEntertainmentActivityPlace_EntertainmentPlaceIdAndEntertainmentActivityPlace_EntertainmentActivityId(entertainmentActivityInput.getEntertainmentPlaceId(), entertainmentActivityInput.getEntertainmentActivityId());
+            reservationRepository.deleteAll(reservationEntities);
             entertainmentActivityPlaceRepository.delete(byId);
         }
     }

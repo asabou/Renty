@@ -48,19 +48,21 @@ public class AnonController {
     @GetMapping("/search-for-entertainment-places")
     private List<EntertainmentPlaceDTO> searchEntertainmentPlace(@RequestParam(required = false) String name,
                                                                  @RequestParam(required = false) String activity) {
-        if (!ServicesUtils.isStringNullOrEmpty(name) && !ServicesUtils.isStringNullOrEmpty(activity) && !name.equals("undefined") && !activity.equals("undefined")) {
+        if (!ServicesUtils.isStringNullOrEmpty(name) && !ServicesUtils.isStringNullOrEmpty(activity)) {
             return entertainmentPlaceService.searchEntertainmentPlacesByNameAndActivity(name, activity);
         }
-        if ((ServicesUtils.isStringNullOrEmpty(name) && ServicesUtils.isStringNullOrEmpty(activity)) || (name.equals("undefined") && activity.equals(
-                "undefined"))) {
-            return entertainmentPlaceService.findAllEntertainmentPlaces();
-        }
-        if (ServicesUtils.isStringNullOrEmpty(name) || name.equals("undefined")) {
+        if (ServicesUtils.isStringNullOrEmpty(name) && !ServicesUtils.isStringNullOrEmpty(activity)) {
             return entertainmentPlaceService.searchEntertainmentPlacesByActivity(activity);
         }
-        if (ServicesUtils.isStringNullOrEmpty(activity) || activity.equals("undefined")) {
+        if (ServicesUtils.isStringNullOrEmpty(activity) && !ServicesUtils.isStringNullOrEmpty(name)) {
             return entertainmentPlaceService.searchEntertainmentPlacesByName(name);
         }
         return entertainmentPlaceService.findAllEntertainmentPlaces();
     }
+
+    @PostMapping("/create-user-owner")
+    private void createOwnerAccount(@RequestBody UserDetailsDTO userDetailsDTO) {
+        userService.createOwnerUser(userDetailsDTO);
+    }
+
 }

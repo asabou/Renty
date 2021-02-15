@@ -15,7 +15,7 @@ public class EntertainmentPlaceInputDTO {
     private String description;
     private byte[] profileImage;
     private AddressDTO address;
-    private List<String> entertainmentActivities;
+    private String entertainmentActivity;
     private Double pricePerHour;
     private Integer maxPeopleAllowed;
 }

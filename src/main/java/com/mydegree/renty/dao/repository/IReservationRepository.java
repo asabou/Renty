@@ -22,4 +22,5 @@ public interface IReservationRepository extends CrudRepository<ReservationEntity
     Iterable<ReservationEntity> findReservationEntitiesByEntertainmentActivityPlace_EntertainmentPlace_UserDetailsIdAndReservationDateIsGreaterThanEqual(final Long id, final Date date);
     Iterable<ReservationEntity> findReservationEntitiesByUserDetailsId(final Long id);
     Iterable<ReservationEntity> findReservationEntitiesByEntertainmentActivityPlace_EntertainmentPlaceId(final Long id);
+    Iterable<ReservationEntity> findReservationEntitiesByEntertainmentActivityPlace_EntertainmentPlaceIdAndEntertainmentActivityPlace_EntertainmentActivityId(final Long placeId, final Long actId);
 }

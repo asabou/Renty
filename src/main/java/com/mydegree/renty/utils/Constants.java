@@ -12,4 +12,6 @@ public class Constants {
     public static final String USER_NOT_FOUND = "User not found!";
 
     public static final String ENTITY_NOT_FOUND = "Entity not found!";
+
+    public static final String ENTITY_ALREADY_EXISTS = "Entity already exists!";
 }

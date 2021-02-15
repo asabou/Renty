@@ -36,11 +36,6 @@ public class AdminController {
         userService.createAdminUser(userDetailsDTO);
     }
 
-    @PostMapping("/create-user-owner")
-    private void createOwnerAccount(@RequestBody UserDetailsDTO userDetailsDTO) {
-        userService.createOwnerUser(userDetailsDTO);
-    }
-
     @DeleteMapping("/delete-account/{id}")
     private void deleteAccount(@PathVariable("id") String id) {
         if (ServicesUtils.isStringNullOrEmpty(id)) {
