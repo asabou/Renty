@@ -40,4 +40,8 @@ public class ServicesUtils {
     public static Long convertStringToLong(final String string) {
         return Long.parseLong(string);
     }
+
+    public static Double convertStringToDouble(final String string) {
+        return Double.parseDouble(string);
+    }
 }

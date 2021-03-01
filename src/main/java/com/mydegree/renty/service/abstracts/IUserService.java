@@ -17,4 +17,5 @@ public interface IUserService {
     UserDetailsDTO findUserByUserId(final Long id);
     Long findUserDetailsIdByUsername(final String username);
     void deleteAccount(final String token);
+    UserDetailsDTO findUserDetailsFromToken(final String token);
 }

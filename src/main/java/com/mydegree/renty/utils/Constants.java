@@ -14,4 +14,6 @@ public class Constants {
     public static final String ENTITY_NOT_FOUND = "Entity not found!";
 
     public static final String ENTITY_ALREADY_EXISTS = "Entity already exists!";
+
+    public static final String PAYMENT_FAILED = "Payment failed! Try again!";
 }

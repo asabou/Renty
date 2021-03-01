@@ -52,7 +52,7 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .authorizeRequests()
                 .antMatchers("/admin/**", "/owner/**", "/renter/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.ADMIN.name())
                 .antMatchers("/owner/**", "/renter/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.OWNER.name(), ApplicationUserRole.ADMIN.name())
-                .antMatchers("/renter/**", "/anon/**").hasAnyAuthority(ApplicationUserRole.RENTER.name(),
+                .antMatchers("/renter/**", "/anon/**", "/payment/**").hasAnyAuthority(ApplicationUserRole.RENTER.name(),
                                                                                     ApplicationUserRole.ADMIN.name(),
                                                                                     ApplicationUserRole.RENTER.name())
                 .antMatchers("/anon/**", "/h2-console/**").anonymous()

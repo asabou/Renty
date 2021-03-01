@@ -118,4 +118,10 @@ public class UserServiceImpl extends AbstractService implements IUserService {
         deleteAccountByUsername(claims.get("sub").toString());
     }
 
+    @Override
+    public UserDetailsDTO findUserDetailsFromToken(String token) {
+        final Claims claims = ServicesUtils.getClaimsFromTokenUsingSecretKey(token, secretKey);
+        return findUserByUserId(ServicesUtils.convertStringToLong(claims.get("userId").toString()));
+    }
+
 }

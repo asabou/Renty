@@ -84,4 +84,10 @@ public class RenterController {
     private List<EntertainmentActivityOutputDTO> findEntertainmentActivitiesForPlace(@PathVariable("id") Long id) {
         return entertainmentActivityService.findEntertainmentActivitiesDetailsByEntertainmentPlaceId(id);
     }
+
+    @GetMapping("/find-user-details")
+    private UserDetailsDTO findUserDetails(@RequestHeader("Authorization") String authorization) {
+        final String token = authorization.split(" ")[1];
+        return userService.findUserDetailsFromToken(token);
+    }
 }
