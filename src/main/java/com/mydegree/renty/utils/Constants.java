@@ -1,7 +1,7 @@
 package com.mydegree.renty.utils;
 
 public class Constants {
-    public static final String imagePath = "C:\\Users\\alexandru.sabou\\MyDegree\\Application\\renty\\src\\main\\resources\\images\\";
+    public static final String imagePath = System.getProperty("user.dir").replace("\\", "\\\\") + "\\src\\main\\resources\\images\\";
 
     public static final String INVALID_QUERY_PARAMS = "Invalid query params!";
 
