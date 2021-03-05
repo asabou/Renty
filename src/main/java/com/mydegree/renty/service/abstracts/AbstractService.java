@@ -80,6 +80,7 @@ public abstract class AbstractService implements IAbstractService {
         final UserEntity user = UserTransformer.transformUser(userDTO);
         final UserDetailsEntity userDetailsEntity = UserDetailsTransformer.transformUserDetails(userDetails);
         final String password = user.getPassword();
+
         user.setPassword(passwordEncoder.encode(Base64Utils.decode(password)));
         user.setUserDetails(userDetailsEntity);
         userDetailsEntity.setUser(user);

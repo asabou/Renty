@@ -139,7 +139,9 @@ public class BootStrapData implements CommandLineRunner {
         entertainmentPlaceInputDTO1.setEntertainmentActivity("Football");
         entertainmentPlaceInputDTO1.setPricePerHour(50.0);
         entertainmentPlaceInputDTO1.setMaxPeopleAllowed(12);
-        entertainmentPlaceInputDTO1.setProfileImage(new ImageBytesUtils("entplace2.jpg").extractBytes());
+        if (activeProfile.equals("dev")) {
+            entertainmentPlaceInputDTO1.setProfileImage(new ImageBytesUtils("entplace2.jpg").extractBytes());
+        }
         addressDTO1.setNumber("12");
         addressDTO1.setStreet("Street1");
         addressDTO1.setCounty("County1");
@@ -155,7 +157,9 @@ public class BootStrapData implements CommandLineRunner {
         entertainmentPlaceInputDTO2.setEntertainmentActivity("Football");
         entertainmentPlaceInputDTO2.setPricePerHour(60.0);
         entertainmentPlaceInputDTO2.setMaxPeopleAllowed(10);
-        entertainmentPlaceInputDTO2.setProfileImage(new ImageBytesUtils("entplace3.jpg").extractBytes());
+        if (activeProfile.equals("dev")) {
+            entertainmentPlaceInputDTO2.setProfileImage(new ImageBytesUtils("entplace3.jpg").extractBytes());
+        }
         addressDTO1.setNumber("11");
         addressDTO1.setStreet("Street2");
         addressDTO1.setCounty("County2");

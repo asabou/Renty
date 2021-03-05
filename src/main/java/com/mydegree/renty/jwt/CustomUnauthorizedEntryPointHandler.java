@@ -1,6 +1,5 @@
 package com.mydegree.renty.jwt;
 
-import com.mydegree.renty.utils.ServicesUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

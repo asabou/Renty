@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -101,4 +100,6 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
     public CustomAccessDeniedHandler accessDeniedHandler() {
         return new CustomAccessDeniedHandler();
     }
+
+
 }
