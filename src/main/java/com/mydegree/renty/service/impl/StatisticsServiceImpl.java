@@ -110,37 +110,4 @@ public class StatisticsServiceImpl implements IStatisticsService {
         }
         return CustomReservationDateTransformer.transformCustomReservationDates(entities);
     }
-
-//    private List<CustomEntertainmentActivityDTO> prepareCustomEntertainmentActivities(final Iterable<CustomEntertainmentActivity> inputs) {
-//        final List<CustomEntertainmentActivityDTO> targets = new ArrayList<>();
-//        inputs.forEach((entity) -> {
-//            targets.add(convertCustomEntertainmentActivityToCustomDTO(entity));
-//        });
-//        return targets;
-//    }
-//
-//    private CustomEntertainmentActivityDTO convertCustomEntertainmentActivityToCustomDTO(final CustomEntertainmentActivity input) {
-//        final CustomEntertainmentActivityDTO target = new CustomEntertainmentActivityDTO();
-//        final EntertainmentActivityEntity entertainmentActivity =
-//                entertainmentActivityRepository.findById(input.getEntertainmentActivityEntityId()).get();
-//        target.setEntertainmentActivity(EntertainmentActivityTransformer.transformEntertainmentActivityEntity(entertainmentActivity));
-//        target.setNrReservations(input.getNrReservations());
-//        return target;
-//    }
-//
-//    private List<CustomEntertainmentPlaceDTO> prepareCustomEntertainmentPlaces(final Iterable<CustomEntertainmentPlace> inputs) {
-//        final List<CustomEntertainmentPlaceDTO> targets = new ArrayList<>();
-//        inputs.forEach((entity) -> {
-//            targets.add(convertCustomEntertainmentPlaceToCustomDTO(entity));
-//        });
-//        return targets;
-//    }
-//
-//    private CustomEntertainmentPlaceDTO convertCustomEntertainmentPlaceToCustomDTO(final CustomEntertainmentPlace input) {
-//        final CustomEntertainmentPlaceDTO target = new CustomEntertainmentPlaceDTO();
-//        final EntertainmentPlaceEntity entertainmentPlace = entertainmentPlaceRepository.findById(input.getEntertainmentPlaceEntityId()).get();
-//        target.setEntertainmentPlace(EntertainmentPlaceTransformer.transformEntertainmentPlaceEntity(entertainmentPlace));
-//        target.setNrReservations(input.getNrReservations());
-//        return target;
-//    }
 }

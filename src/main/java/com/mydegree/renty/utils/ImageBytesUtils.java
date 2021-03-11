@@ -8,12 +8,10 @@ public class ImageBytesUtils {
     private final String filename;
 
     public ImageBytesUtils(String filename) {
-//        this.filename = Constants.imagePath + filename;
-        this.filename = filename;
+        this.filename = Constants.imagePath + "/" + filename;
     }
 
     private InputStream getFileFromResourceAsStream(String fileName) {
-
         // The class loader that loaded the class
         ClassLoader classLoader = getClass().getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(fileName);
@@ -31,7 +29,6 @@ public class ImageBytesUtils {
         BufferedImage originalImage = null;
         try {
             originalImage = ImageIO.read(getFileFromResourceAsStream(this.filename));
-//            ImageIO.read (fileInputStream)
         } catch (IOException e) {
             e.printStackTrace();
         }
