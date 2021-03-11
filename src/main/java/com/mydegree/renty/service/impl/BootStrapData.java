@@ -140,7 +140,7 @@ public class BootStrapData implements CommandLineRunner {
         entertainmentPlaceInputDTO1.setPricePerHour(50.0);
         entertainmentPlaceInputDTO1.setMaxPeopleAllowed(12);
         if (activeProfile.equals("dev")) {
-            entertainmentPlaceInputDTO1.setProfileImage(new ImageBytesUtils("entplace2.jpg").extractBytes());
+            entertainmentPlaceInputDTO1.setProfileImage(new ImageBytesUtils("images/entplace2.jpg").extractBytes());
         }
         addressDTO1.setNumber("12");
         addressDTO1.setStreet("Street1");
@@ -158,7 +158,7 @@ public class BootStrapData implements CommandLineRunner {
         entertainmentPlaceInputDTO2.setPricePerHour(60.0);
         entertainmentPlaceInputDTO2.setMaxPeopleAllowed(10);
         if (activeProfile.equals("dev")) {
-            entertainmentPlaceInputDTO2.setProfileImage(new ImageBytesUtils("entplace3.jpg").extractBytes());
+            entertainmentPlaceInputDTO2.setProfileImage(new ImageBytesUtils("images/entplace3.jpg").extractBytes());
         }
         addressDTO1.setNumber("11");
         addressDTO1.setStreet("Street2");
