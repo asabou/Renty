@@ -30,13 +30,6 @@ public class ServicesUtils {
         return string == null || string.isEmpty();
     }
 
-    public static Claims getClaimsFromTokenUsingSecretKey(final String token, final SecretKey secretKey) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
     public static Long convertStringToLong(final String string) {
         return Long.parseLong(string);
     }

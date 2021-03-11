@@ -10,7 +10,7 @@ import com.mydegree.renty.service.model.EntertainmentPlaceDTO;
 import com.mydegree.renty.service.model.EntertainmentPlaceInputDTO;
 import com.mydegree.renty.utils.Constants;
 import com.mydegree.renty.utils.ServicesUtils;
-import io.jsonwebtoken.Claims;
+import com.mydegree.renty.utils.TokenUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -53,9 +53,8 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
 
     @Override
     public List<EntertainmentPlaceDTO> findAllOwnedEntertainmentPlaces(String token) {
-        final Claims claims = ServicesUtils.getClaimsFromTokenUsingSecretKey(token, secretKey);
         final Iterable<EntertainmentPlaceEntity> entities =
-                entertainmentPlaceRepository.findEntertainmentPlaceEntitiesByUserDetailsId(Long.parseLong(claims.get(Constants.userId).toString()));
+                entertainmentPlaceRepository.findEntertainmentPlaceEntitiesByUserDetailsId(TokenUtils.getUserIdFromTokenUsingSecretKey(token, secretKey));
         return EntertainmentPlaceTransformer.transformEntertainmentPlaceEntities(entities);
     }
 

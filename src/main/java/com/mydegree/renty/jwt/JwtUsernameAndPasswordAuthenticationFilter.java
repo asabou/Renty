@@ -2,6 +2,7 @@ package com.mydegree.renty.jwt;
 
 import com.mydegree.renty.service.abstracts.IUserService;
 import com.mydegree.renty.utils.Base64Utils;
+import com.mydegree.renty.utils.Constants;
 import com.mydegree.renty.utils.ServicesUtils;
 import io.jsonwebtoken.Jwts;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        final String authHeader = request.getHeader("Authorization").split(" ")[1];
+        final String authHeader = request.getHeader(Constants.Authorization).split(" ")[1];
         final String authStringDecoded = Base64Utils.decode(authHeader);
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 Base64Utils.getUsername(authStringDecoded),
@@ -53,8 +54,8 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                             Authentication authResult) {
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
-                .claim("authorities", authResult.getAuthorities())
-                .claim("userId", userService.findUserDetailsIdByUsername(authResult.getName()))
+                .claim(Constants.authorities, authResult.getAuthorities())
+                .claim(Constants.userId, userService.findUserDetailsIdByUsername(authResult.getName()))
                 .setIssuedAt(new Date())
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(1)))
                 .signWith(secretKey)

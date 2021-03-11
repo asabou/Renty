@@ -13,6 +13,7 @@ import com.mydegree.renty.service.model.RoleDTO;
 import com.mydegree.renty.service.model.UserDTO;
 import com.mydegree.renty.service.model.UserDetailsDTO;
 import com.mydegree.renty.utils.ServicesUtils;
+import com.mydegree.renty.utils.TokenUtils;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -114,14 +115,12 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
     @Override
     public void deleteAccount(String token) {
-        final Claims claims = ServicesUtils.getClaimsFromTokenUsingSecretKey(token, secretKey);
-        deleteAccountByUsername(claims.get("sub").toString());
+        deleteAccountByUsername(TokenUtils.getUsernameFromTokenUsingSecretKey(token, secretKey));
     }
 
     @Override
     public UserDetailsDTO findUserDetailsFromToken(String token) {
-        final Claims claims = ServicesUtils.getClaimsFromTokenUsingSecretKey(token, secretKey);
-        return findUserByUserId(ServicesUtils.convertStringToLong(claims.get("userId").toString()));
+        return findUserByUserId(TokenUtils.getUserIdFromTokenUsingSecretKey(token, secretKey));
     }
 
 }

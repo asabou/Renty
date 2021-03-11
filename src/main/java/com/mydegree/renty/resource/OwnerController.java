@@ -3,13 +3,12 @@ package com.mydegree.renty.resource;
 import com.mydegree.renty.service.abstracts.IEntertainmentActivityService;
 import com.mydegree.renty.service.abstracts.IEntertainmentPlaceService;
 import com.mydegree.renty.service.abstracts.IReservationService;
+import com.mydegree.renty.service.abstracts.IStatisticsService;
 import com.mydegree.renty.service.impl.UserServiceImpl;
-import com.mydegree.renty.service.model.EntertainmentActivityInputDTO;
-import com.mydegree.renty.service.model.EntertainmentPlaceDTO;
-import com.mydegree.renty.service.model.EntertainmentPlaceInputDTO;
-import com.mydegree.renty.service.model.ReservationOutputDTO;
+import com.mydegree.renty.service.model.*;
 import com.mydegree.renty.utils.Constants;
 import com.mydegree.renty.utils.ServicesUtils;
+import com.mydegree.renty.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,15 +20,17 @@ public class OwnerController {
     private final IEntertainmentPlaceService entertainmentPlaceService;
     private final IEntertainmentActivityService entertainmentActivityService;
     private final IReservationService reservationService;
+    private final IStatisticsService statisticsService;
 
     public OwnerController(UserServiceImpl userService,
                            IEntertainmentPlaceService entertainmentPlaceService,
                            IEntertainmentActivityService entertainmentActivityService,
-                           IReservationService reservationService) {
+                           IReservationService reservationService, IStatisticsService statisticsService) {
         this.userService = userService;
         this.entertainmentPlaceService = entertainmentPlaceService;
         this.entertainmentActivityService = entertainmentActivityService;
         this.reservationService = reservationService;
+        this.statisticsService = statisticsService;
     }
 
     @PostMapping("/create-entertainment-place")
@@ -43,14 +44,14 @@ public class OwnerController {
     }
 
     @GetMapping("/all-owned-entertainment-places")
-    private List<EntertainmentPlaceDTO> findAllOwnedEntertainmentPlaces(@RequestHeader(name = "Authorization") String authorization) {
-        final String token = authorization.split(" ")[1];
+    private List<EntertainmentPlaceDTO> findAllOwnedEntertainmentPlaces(@RequestHeader(name = Constants.Authorization) String authorization) {
+        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
         return entertainmentPlaceService.findAllOwnedEntertainmentPlaces(token);
     }
 
     @GetMapping("/all-active-reservations-from-owner")
-    private List<ReservationOutputDTO> findAllActiveReservationsFromAnOwner(@RequestHeader(name = "Authorization") String authorization) {
-        final String token = authorization.split(" ")[1];
+    private List<ReservationOutputDTO> findAllActiveReservationsFromAnOwner(@RequestHeader(name = Constants.Authorization) String authorization) {
+        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
         return reservationService.findAllActiveReservationsFromAnOwner(token);
     }
 
@@ -80,5 +81,37 @@ public class OwnerController {
     @PostMapping("/create-entertainment-activity-for-place")
     private void createEntertainmentActivityForPlace(@RequestBody EntertainmentActivityInputDTO entertainmentActivityInputDTO) {
         entertainmentActivityService.saveEntertainmentActivityForPlace(entertainmentActivityInputDTO);
+    }
+
+    @GetMapping("/most-rented-entertainment-activities")
+    private List<CustomEntertainmentActivityDTO> getMostRentedEntertainmentActivities(@RequestHeader(name = Constants.Authorization) String authorization,
+                                                                                      @RequestParam(required = false) String dateFrom, @RequestParam(required = false) String dateTo) {
+        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
+        return statisticsService.findTopMostRentedEntertainmentActivities(token, dateFrom, dateTo);
+    }
+
+    @GetMapping("/most-rented-entertainment-places")
+    private List<CustomEntertainmentPlaceDTO> getMostRentedEntertainmentPlaces(@RequestHeader(name = Constants.Authorization) String authorization,
+                                                                          @RequestParam(required = false) String dateFrom, @RequestParam(required = false) String dateTo) {
+        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
+        return statisticsService.findTopMostRentedEntertainmentPlaces(token, dateFrom, dateTo);
+    }
+
+    @GetMapping("/most-rented-reservation-hour")
+    private List<CustomReservationHourDTO> getMostRentedReservationHour(@RequestHeader(name = Constants.Authorization) String authorization,
+                                                                        @RequestParam(required = false) Long placeId,
+                                                                        @RequestParam(required = false) String dateFrom,
+                                                                        @RequestParam(required = false) String dateTo) {
+        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
+        return statisticsService.findTopMostRentedHourReservations(token, placeId, dateFrom, dateTo);
+    }
+
+    @GetMapping("/most-rented-reservation-date")
+    private List<CustomReservationDateDTO> getMostRentedReservationDate(@RequestHeader(name = Constants.Authorization) String authorization,
+                                                                        @RequestParam(required = false) Long placeId,
+                                                                        @RequestParam(required = false) String dateFrom,
+                                                                        @RequestParam(required = false) String dateTo) {
+        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
+        return statisticsService.findTopMostRentedDateReservations(token, placeId, dateFrom, dateTo);
     }
 }

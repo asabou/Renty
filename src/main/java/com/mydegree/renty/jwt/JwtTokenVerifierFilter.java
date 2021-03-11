@@ -1,10 +1,9 @@
 package com.mydegree.renty.jwt;
 
 import com.google.common.base.Strings;
+import com.mydegree.renty.utils.TokenUtils;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -44,10 +43,7 @@ public class JwtTokenVerifierFilter extends OncePerRequestFilter {
         String token = authorizationHeader.replace(jwtConfig.getTokenPrefix(), "");
 
         try {
-            Jws<Claims> claimsJws = Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .parseClaimsJws(token);
-            Claims body = claimsJws.getBody();
+            Claims body = TokenUtils.getClaimsFromTokenUsingSecretKey(token, secretKey);
             String username = body.getSubject();
             List<Map<String, String>> authorities = (List<Map<String, String>>) body.get("authorities");
 

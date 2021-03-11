@@ -14,6 +14,7 @@ import com.mydegree.renty.service.model.ReservationOutputDTO;
 import com.mydegree.renty.utils.Constants;
 import com.mydegree.renty.utils.DateUtils;
 import com.mydegree.renty.utils.ServicesUtils;
+import com.mydegree.renty.utils.TokenUtils;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -73,8 +74,7 @@ public class ReservationServiceImpl extends AbstractService implements IReservat
 
     @Override
     public List<ReservationOutputDTO> findAllActiveReservationsFromRenter(String token) {
-        final Claims claims = ServicesUtils.getClaimsFromTokenUsingSecretKey(token, secretKey);
-        final Long id = ServicesUtils.convertStringToLong(claims.get(Constants.userId).toString());
+        final Long id = TokenUtils.getUserIdFromTokenUsingSecretKey(token, secretKey);
         final Iterable<ReservationEntity> reservationEntities =
                 reservationRepository.findReservationEntitiesByUserDetailsIdAndReservationDateIsGreaterThanEqualOrderByReservationDateAsc(id, DateUtils.getCurrentDate());
         return prepareReservationsForOutput(reservationEntities);
@@ -103,8 +103,7 @@ public class ReservationServiceImpl extends AbstractService implements IReservat
 
     @Override
     public List<ReservationOutputDTO> findAllActiveReservationsFromAnOwner(String token) {
-        final Claims claims = ServicesUtils.getClaimsFromTokenUsingSecretKey(token, secretKey);
-        final Long id = ServicesUtils.convertStringToLong(claims.get(Constants.userId).toString());
+        final Long id = TokenUtils.getUserIdFromTokenUsingSecretKey(token, secretKey);
         final Iterable<ReservationEntity> reservationEntities =
                 reservationRepository.findReservationEntitiesByEntertainmentActivityPlace_EntertainmentPlace_UserDetailsIdAndReservationDateIsGreaterThanEqual(id,
                         DateUtils.getCurrentDate());

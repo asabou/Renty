@@ -7,6 +7,12 @@ public class Constants {
 
     public static final String userId = "userId";
 
+    public static final String Authorization = "Authorization";
+
+    public static final String sub = "sub";
+
+    public static final String authorities = "authorities";
+
     public static final String ENT_PLACE_NOT_FOUND = "Entertainment place not found!";
 
     public static final String USER_NOT_FOUND = "User not found!";

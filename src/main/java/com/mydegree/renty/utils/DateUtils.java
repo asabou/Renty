@@ -20,4 +20,20 @@ public class DateUtils {
         }
         return new Date(System.currentTimeMillis());
     }
+
+    public static Date getDateFrom1970() {
+        return new Date(0);
+    }
+
+    public static Date getDateFrom3000() {
+        return new Date(32503680000000L);
+    }
+
+    public static Date getMinTemporalDateFromString(final String date) {
+        return date == null ? getDateFrom1970() : parseStringToSqlDate(date);
+    }
+
+    public static Date getMaxTemporalDateFromString(final String date) {
+        return date == null ? getDateFrom3000() : parseStringToSqlDate(date);
+    }
 }

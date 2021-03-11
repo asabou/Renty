@@ -5,7 +5,9 @@ import com.mydegree.renty.service.abstracts.IEntertainmentPlaceService;
 import com.mydegree.renty.service.abstracts.IReservationService;
 import com.mydegree.renty.service.impl.UserServiceImpl;
 import com.mydegree.renty.service.model.*;
+import com.mydegree.renty.utils.Constants;
 import com.mydegree.renty.utils.ServicesUtils;
+import com.mydegree.renty.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,8 +28,8 @@ public class RenterController {
     }
 
     @DeleteMapping("/delete-account")
-    private void deleteAccount(@RequestHeader(name = "Authorization") String authorization) {
-        final String token = authorization.split(" ")[1];
+    private void deleteAccount(@RequestHeader(name = Constants.Authorization) String authorization) {
+        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
         userService.deleteAccount(token);
     }
 
@@ -47,8 +49,8 @@ public class RenterController {
     }
 
     @GetMapping("/all-active-reservations")
-    private List<ReservationOutputDTO> findAllActiveReservations(@RequestHeader(name = "Authorization") String authorization) {
-        final String token = authorization.split(" ")[1];
+    private List<ReservationOutputDTO> findAllActiveReservations(@RequestHeader(name = Constants.Authorization) String authorization) {
+        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
         return reservationService.findAllActiveReservationsFromRenter(token);
     }
 
@@ -86,8 +88,8 @@ public class RenterController {
     }
 
     @GetMapping("/find-user-details")
-    private UserDetailsDTO findUserDetails(@RequestHeader("Authorization") String authorization) {
-        final String token = authorization.split(" ")[1];
+    private UserDetailsDTO findUserDetails(@RequestHeader(name = Constants.Authorization) String authorization) {
+        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
         return userService.findUserDetailsFromToken(token);
     }
 }

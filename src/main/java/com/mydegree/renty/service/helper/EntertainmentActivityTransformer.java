@@ -44,5 +44,4 @@ public class EntertainmentActivityTransformer {
         fillEntertainmentActivityEntity(input, target);
         return target;
     }
-
 }
