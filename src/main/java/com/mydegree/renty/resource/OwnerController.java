@@ -108,10 +108,8 @@ public class OwnerController {
 
     @GetMapping("/most-rented-reservation-date")
     private List<CustomReservationDateDTO> getMostRentedReservationDate(@RequestHeader(name = Constants.Authorization) String authorization,
-                                                                        @RequestParam(required = false) Long placeId,
-                                                                        @RequestParam(required = false) String dateFrom,
-                                                                        @RequestParam(required = false) String dateTo) {
+                                                                        @RequestParam(required = false) Long placeId) {
         final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
-        return statisticsService.findTopMostRentedDateReservations(token, placeId, dateFrom, dateTo);
+        return statisticsService.findTopMostRentedDateReservations(token, placeId);
     }
 }

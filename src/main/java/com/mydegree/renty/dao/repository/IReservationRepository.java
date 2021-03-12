@@ -35,19 +35,19 @@ public interface IReservationRepository extends CrudRepository<ReservationEntity
             "inner join EntertainmentPlaceEntity ep on res.entertainmentActivityPlace.entertainmentPlace = ep " +
             "inner join UserDetailsEntity u on ep.userDetails.id = u.id " +
             "where u.id = :userId group by res.reservationDate order by count(res.reservationDate) desc")
-    Iterable<CustomReservationDate> findTopMostRentedDateForOwner(final Long userId);
+    Iterable<CustomReservationDate> findTopMostRentedDatesForOwner(final Long userId);
 
     @Query("select new com.mydegree.renty.dao.entity.custom.CustomReservationDate(res.reservationDate, count(res.reservationDate)) from " +
             "ReservationEntity res  " +
-            "inner join EntertainmentPlaceEntity ep on res.entertainmentActivityPlace.entertainmentPlace = ep " +
+            "left join EntertainmentPlaceEntity ep on res.entertainmentActivityPlace.entertainmentPlace = ep " +
             "inner join UserDetailsEntity u on ep.userDetails.id = u.id " +
             "where u.id = :userId and ep.id = :placeId group by res.reservationDate order by count(res.reservationDate) desc")
-    Iterable<CustomReservationDate> findTopMostRentedDateForOwnerFromPlace(final Long userId,
-                                                                           final Long placeId);
+    Iterable<CustomReservationDate> findTopMostRentedDatesForOwnerFromPlace(final Long userId,
+                                                                            final Long placeId);
 
     @Query("select new com.mydegree.renty.dao.entity.custom.CustomReservationDate(res.reservationDate, count(res.reservationDate)) from " +
             "ReservationEntity res group by res.reservationDate order by count(res.reservationDate) desc")
-    Iterable<CustomReservationDate> findTopMostRentedDateForAdmin();
+    Iterable<CustomReservationDate> findTopMostRentedDatesForAdmin();
 
     @Query("select new com.mydegree.renty.dao.entity.custom.CustomReservationHour(res.reservationHour, count(res.reservationHour)) from " +
             "ReservationEntity res where res.reservationDate between :dateFrom and :dateTo group by res.reservationHour order by count(res" +

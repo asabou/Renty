@@ -12,6 +12,5 @@ public interface IStatisticsService {
     List<CustomEntertainmentPlaceDTO> findTopMostRentedEntertainmentPlaces(final String token, final String dateFrom, final String dateTo);
     List<CustomReservationHourDTO> findTopMostRentedHourReservations(final String token, final Long placeId, final String dateFrom,
                                                                      final String dateTo);
-    List<CustomReservationDateDTO> findTopMostRentedDateReservations(final String token, final Long placeId, final String dateFrom,
-                                                                     final String dateTo);
+    List<CustomReservationDateDTO> findTopMostRentedDateReservations(final String token, final Long placeId);
 }

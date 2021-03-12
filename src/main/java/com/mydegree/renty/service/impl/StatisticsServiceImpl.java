@@ -94,17 +94,17 @@ public class StatisticsServiceImpl implements IStatisticsService {
     }
 
     @Override
-    public List<CustomReservationDateDTO> findTopMostRentedDateReservations(String token, Long placeId, String dateFrom, String dateTo) {
+    public List<CustomReservationDateDTO> findTopMostRentedDateReservations(String token, Long placeId) {
         Iterable<CustomReservationDate> entities = null;
         if (TokenUtils.hasAdminRole(token, secretKey)) {
-            entities = reservationRepository.findTopMostRentedDateForAdmin();
+            entities = reservationRepository.findTopMostRentedDatesForAdmin();
         } else {
             if (TokenUtils.hasOwnerRole(token, secretKey)) {
                 final Long userId = TokenUtils.getUserIdFromTokenUsingSecretKey(token, secretKey);
                 if (placeId == null) {
-                    entities = reservationRepository.findTopMostRentedDateForOwner(userId);
+                    entities = reservationRepository.findTopMostRentedDatesForOwner(userId);
                 } else {
-                    entities = reservationRepository.findTopMostRentedDateForOwnerFromPlace(userId, placeId);
+                    entities = reservationRepository.findTopMostRentedDatesForOwnerFromPlace(userId, placeId);
                 }
             }
         }
