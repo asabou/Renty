@@ -103,7 +103,7 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
         }
         final EntertainmentPlaceEntity entity = entityOptional.get();
         entity.setName(entertainmentPlaceDTO.getName());
-        entity.setDescription(entity.getDescription());
+        entity.setDescription(entertainmentPlaceDTO.getDescription());
         entity.setProfileImage(entertainmentPlaceDTO.getProfileImage());
         entity.setAddress(AddressTransformer.transformAddress(entertainmentPlaceDTO.getAddress()));
         entertainmentPlaceRepository.save(entity);
