@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/proddb?createDatabaseIfNotExist=true&autoReconnect=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: rentyuser
+    password: rentypassword
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: false
+application:
+  jwt:
+    secretKey: RentyBackend;RentyBackend;RentyBackend;RentyBackend;RentyBackend;RentyBackend;RentyBackend;
+    tokenPrefix: Bearer
+    tokenExpirationAfterDays: 1
+stripe:
+  key:
+    secret: sk_test_51IMvgyJcxq1wroO7xkeNp1NPODEWPNShSLdEh53V2kXxXP60omIykZQM8fsUyw2tZvTRBWDYNXT7gE2gowWtjEuB00SJILj4nT
+    public: pk_test_51IMvgyJcxq1wroO7RHpy6puCkeceDfydJfMw8xPK4554rQbL6Iz51iZ0rMIZ5PVD8esVbpVlDg0o6dKaeVWcPTg000CQB3zlt0
