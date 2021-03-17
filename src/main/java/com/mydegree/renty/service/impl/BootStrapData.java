@@ -210,7 +210,7 @@ public class BootStrapData implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         //TODO I have to ask somebody which type of database (h2 or a real mysql db) should I use when active profile is test or dev
-        if (activeProfile.equals("dev") || activeProfile.equals("test") || true) {
+        if (activeProfile.equals("dev") || activeProfile.equals("test")) {
             saveEntertainmentActivities();
             saveRoles();
             saveAdmins();
