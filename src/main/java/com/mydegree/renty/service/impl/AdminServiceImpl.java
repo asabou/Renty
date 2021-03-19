@@ -1,22 +1,14 @@
 package com.mydegree.renty.service.impl;
 
-import com.mydegree.renty.dao.entity.RoleEntity;
 import com.mydegree.renty.dao.entity.UserDetailsEntity;
 import com.mydegree.renty.dao.entity.UserEntity;
 import com.mydegree.renty.dao.repository.*;
 import com.mydegree.renty.service.abstracts.AbstractService;
 import com.mydegree.renty.service.abstracts.IAdminService;
-import com.mydegree.renty.service.helper.RoleTransformer;
 import com.mydegree.renty.service.helper.UserDetailsTransformer;
-import com.mydegree.renty.service.model.RoleDTO;
 import com.mydegree.renty.service.model.UserDetailsDTO;
-import com.mydegree.renty.utils.ServicesUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class AdminServiceImpl extends AbstractService implements IAdminService {
