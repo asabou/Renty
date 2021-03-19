@@ -18,7 +18,6 @@ import java.util.Optional;
 public class EntertainmentActivityServiceImpl extends AbstractService implements IEntertainmentActivityService {
     private final IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository;
     private final IEntertainmentPlaceRepository entertainmentPlaceRepository;
-    private final IEntertainmentActivityRepository entertainmentActivityRepository;
 
     public EntertainmentActivityServiceImpl(IUserRepository userRepository,
                                             IUserDetailsRepository userDetailsRepository,
@@ -27,12 +26,10 @@ public class EntertainmentActivityServiceImpl extends AbstractService implements
                                             PasswordEncoder passwordEncoder,
                                             IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository,
                                             IReservationRepository reservationRepository,
-                                            IEntertainmentPlaceRepository entertainmentPlaceRepository,
-                                            IEntertainmentActivityRepository entertainmentActivityRepository1) {
+                                            IEntertainmentPlaceRepository entertainmentPlaceRepository) {
         super(userRepository, userDetailsRepository, roleRepository, entertainmentActivityRepository, passwordEncoder, reservationRepository);
         this.entertainmentActivityPlaceRepository = entertainmentActivityPlaceRepository;
         this.entertainmentPlaceRepository = entertainmentPlaceRepository;
-        this.entertainmentActivityRepository = entertainmentActivityRepository1;
     }
 
     @Override
