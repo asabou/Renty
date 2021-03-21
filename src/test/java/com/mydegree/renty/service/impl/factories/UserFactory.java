@@ -48,20 +48,6 @@ public class UserFactory {
         return Arrays.asList(createMockRole("ADMIN"), createMockRole("OWNER"), createMockRole("renter"));
     }
 
-    public List<RoleEntity> createMockOwnerRoles() {
-        return Arrays.asList(createMockRole("OWNER"), createMockRole("RENTER"));
-    }
-
-    public List<RoleEntity> createMockRenterRoles() {
-        return Arrays.asList(createMockRole("RENTER"));
-    }
-
-    public UserDetailsDTO createMockOwnerUserDetailsDTO(final String username) {
-        final UserDetailsDTO userDetailsDTO = UserDetailsTransformer.transformUserDetailsEntity(createSimpleMockUserDetailsEntity(username));
-        userDetailsDTO.setUser(UserTransformer.transformUserEntity(createMockUserOwner(username)));
-        return userDetailsDTO;
-    }
-
     public UserDetailsEntity createSimpleMockUserDetailsEntity(final String name) {
         final UserDetailsEntity entity = new UserDetailsEntity();
         entity.setFirstName(name);
