@@ -101,5 +101,4 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
         return new CustomAccessDeniedHandler();
     }
 
-
 }

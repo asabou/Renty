@@ -1,6 +1,11 @@
 package com.mydegree.renty.service.impl.factories;
 
 import com.mydegree.renty.dao.entity.EntertainmentActivityEntity;
+import com.mydegree.renty.dao.entity.EntertainmentActivityPlaceEntity;
+import com.mydegree.renty.dao.entity.custom.CustomEntertainmentActivity;
+import com.mydegree.renty.service.model.EntertainmentActivityDTO;
+import com.mydegree.renty.service.model.EntertainmentActivityInputDTO;
+import com.mydegree.renty.service.model.EntertainmentActivityPlaceIdDTO;
 import com.mydegree.renty.service.model.EntertainmentActivityDTO;
 import com.mydegree.renty.service.model.EntertainmentActivityInputDTO;
 
@@ -34,4 +39,29 @@ public class EntertainmentActivityFactory {
         return activity;
     }
 
+    public CustomEntertainmentActivity createMockCustomEntertainmentActivity() {
+        final CustomEntertainmentActivity activity = new CustomEntertainmentActivity();
+        activity.setEntertainmentActivity("activity");
+        activity.setEntertainmentActivityDescription("description");
+        activity.setNrReservations(10L);
+        return activity;
+    }
+
+    public List<CustomEntertainmentActivity> createMockCustomEntertainmentActivities() {
+        return Arrays.asList(createMockCustomEntertainmentActivity());
+    }
+
+    public EntertainmentActivityPlaceEntity createMockEntertainmentActivityPlaceEntity() {
+        final EntertainmentActivityPlaceEntity entity = new EntertainmentActivityPlaceEntity();
+        entity.setEntertainmentPlace(new EntertainmentPlaceFactory().createSimpleMockEntertainmentPlaceEntity("place"));
+        entity.setEntertainmentActivity(createSimpleMockEntertainmentActivity("activity"));
+        return entity;
+    }
+
+    public EntertainmentActivityPlaceIdDTO createMockEntertainmentActivityPlaceIdDTO() {
+        final EntertainmentActivityPlaceIdDTO entity = new EntertainmentActivityPlaceIdDTO();
+        entity.setEntertainmentPlace(1L);
+        entity.setEntertainmentActivity(1L);
+        return entity;
+    }
 }

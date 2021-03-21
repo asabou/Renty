@@ -7,6 +7,7 @@ import com.mydegree.renty.service.impl.factories.UserFactory;
 import com.mydegree.renty.service.model.UserDetailsDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +21,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 @ActiveProfiles("test")
 class AdminServiceImplTest extends AbstractTest {
+    @InjectMocks
     private AdminServiceImpl adminService;
 
     @Mock

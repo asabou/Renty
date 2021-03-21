@@ -1,9 +1,6 @@
 package com.mydegree.renty.service.abstracts;
 
-import com.mydegree.renty.dao.entity.EntertainmentActivityEntity;
-import com.mydegree.renty.dao.entity.ReservationEntity;
-import com.mydegree.renty.dao.entity.UserDetailsEntity;
-import com.mydegree.renty.dao.entity.UserEntity;
+import com.mydegree.renty.dao.entity.*;
 import com.mydegree.renty.dao.repository.*;
 import com.mydegree.renty.exceptions.BadRequestException;
 import com.mydegree.renty.exceptions.InternalServerErrorException;
@@ -15,11 +12,13 @@ import com.mydegree.renty.service.model.EntertainmentActivityDTO;
 import com.mydegree.renty.service.model.UserDTO;
 import com.mydegree.renty.service.model.UserDetailsDTO;
 import com.mydegree.renty.utils.Base64Utils;
+import com.mydegree.renty.utils.Constants;
 import com.mydegree.renty.utils.ServicesUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public abstract class AbstractService implements IAbstractService {
@@ -145,6 +144,42 @@ public abstract class AbstractService implements IAbstractService {
         throw new InternalServerErrorException(message);
     }
 
+    @Override
+    public boolean userIsAdmin(Long userId) {
+        final UserEntity userEntity = findUserEntityById(userId);
+        return userHasRights(userEntity, "ADMIN");
+    }
+
+    @Override
+    public boolean userIsOwner(Long userId) {
+        final UserEntity userEntity = findUserEntityById(userId);
+        return userHasRights(userEntity, "OWNER") && !userHasRights(userEntity, "ADMIN");
+    }
+
+    @Override
+    public boolean userIdHasRenterRights(Long userId) {
+        final UserEntity userEntity = findUserEntityById(userId);
+        return userHasRights(userEntity, "RENTER");
+    }
+
+    private UserEntity findUserEntityById(final Long userId) {
+        final Optional<UserEntity> byId = userRepository.findById(userId);
+        if (byId.isEmpty()) {
+            throwNotFoundException(Constants.ENTITY_NOT_FOUND);
+        }
+        return byId.get();
+    }
+
+    private boolean userHasRights(final UserEntity userEntity, final String role) {
+        final Set<RoleEntity> roles = userEntity.getAuthorities();
+        for (final RoleEntity rol : roles) {
+            if (rol.getRole().equals(role)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void deleteAllDependentEntitiesForUserId(final Long id) {
         deleteReservationsByUserId(id);
     }
@@ -153,5 +188,6 @@ public abstract class AbstractService implements IAbstractService {
         final Iterable<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserDetailsId(userId);
         reservationRepository.deleteAll(reservations);
     }
+
 
 }

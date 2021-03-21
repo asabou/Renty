@@ -5,6 +5,7 @@ import com.mydegree.renty.dao.repository.IUserRepository;
 import com.mydegree.renty.service.impl.factories.UserFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 @ActiveProfiles("test")
 class LoginServiceImplTest extends AbstractTest {
+    @InjectMocks
     private LoginServiceImpl loginService;
 
     @Mock
