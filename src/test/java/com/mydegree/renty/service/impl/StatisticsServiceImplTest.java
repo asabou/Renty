@@ -203,6 +203,4 @@ class StatisticsServiceImplTest extends AbstractTest {
         verify(userRepository, times(2)).findById(any());
         verify(reservationRepository, times(1)).findTopMostRentedDatesForAdmin();
     }
-
-
 }

@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
-class UserServiceImplTest extends AbstractTest {
+class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -376,6 +376,5 @@ class UserServiceImplTest extends AbstractTest {
         }
         verify(userRepository, times(1)).findUserByUsername(anyString());
         verify(userRepository, times(0)).delete(any(UserEntity.class));
-
     }
 }

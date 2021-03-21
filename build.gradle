@@ -19,6 +19,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.jetbrains:annotations:20.1.0'
+	implementation 'junit:junit:4.12'
 	compileOnly 'org.projectlombok:lombok'
 	compile group: 'com.h2database', name: 'h2', version: '1.4.200'
 	compile group: 'com.google.guava', name: 'guava', version: '28.1-jre'
