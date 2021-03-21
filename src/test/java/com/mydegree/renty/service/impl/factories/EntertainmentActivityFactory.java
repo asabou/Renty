@@ -6,6 +6,8 @@ import com.mydegree.renty.dao.entity.custom.CustomEntertainmentActivity;
 import com.mydegree.renty.service.model.EntertainmentActivityDTO;
 import com.mydegree.renty.service.model.EntertainmentActivityInputDTO;
 import com.mydegree.renty.service.model.EntertainmentActivityPlaceIdDTO;
+import com.mydegree.renty.service.model.EntertainmentActivityDTO;
+import com.mydegree.renty.service.model.EntertainmentActivityInputDTO;
 
 import java.util.Arrays;
 import java.util.List;
@@ -62,5 +64,4 @@ public class EntertainmentActivityFactory {
         entity.setEntertainmentActivity(1L);
         return entity;
     }
-
 }

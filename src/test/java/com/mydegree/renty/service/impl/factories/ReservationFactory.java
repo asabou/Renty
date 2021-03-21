@@ -57,5 +57,6 @@ public class ReservationFactory {
 
     public List<CustomReservationDate> createMockCustomReservationDates() {
         return Arrays.asList(createMockCustomReservationDate());
+        return Arrays.asList(createSimpleMockReservationEntity());
     }
 }

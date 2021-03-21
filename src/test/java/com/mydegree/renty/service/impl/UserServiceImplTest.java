@@ -33,6 +33,23 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 class UserServiceImplTest extends AbstractTest {
     @InjectMocks
+import com.mydegree.renty.dao.repository.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import javax.crypto.SecretKey;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@Profile("test")
+@SpringBootTest
+class UserServiceImplTest {
+    @InjectMock
     private UserServiceImpl userService;
 
     @Mock
@@ -376,6 +393,5 @@ class UserServiceImplTest extends AbstractTest {
         }
         verify(userRepository, times(1)).findUserByUsername(anyString());
         verify(userRepository, times(0)).delete(any(UserEntity.class));
-
     }
 }
