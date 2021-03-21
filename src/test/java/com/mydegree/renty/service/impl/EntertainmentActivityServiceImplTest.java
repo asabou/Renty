@@ -12,13 +12,13 @@ import com.mydegree.renty.service.model.EntertainmentActivityInputDTO;
 import com.mydegree.renty.service.model.EntertainmentActivityOutputDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.crypto.SecretKey;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +29,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 @ActiveProfiles("test")
 class EntertainmentActivityServiceImplTest extends AbstractTest {
+    @InjectMocks
     private EntertainmentActivityServiceImpl entertainmentActivityService;
 
     @Mock

@@ -6,10 +6,12 @@ import com.mydegree.renty.service.abstracts.IReservationService;
 import com.mydegree.renty.service.impl.UserServiceImpl;
 import com.mydegree.renty.service.model.*;
 import com.mydegree.renty.utils.Constants;
+import com.mydegree.renty.utils.RestUtils;
 import com.mydegree.renty.utils.ServicesUtils;
 import com.mydegree.renty.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.SecretKey;
 import java.util.List;
 
 @RestController
@@ -19,18 +21,20 @@ public class RenterController {
     private final IReservationService reservationService;
     private final IEntertainmentPlaceService entertainmentPlaceService;
     private final IEntertainmentActivityService entertainmentActivityService;
+    private final SecretKey secretKey;
 
-    public RenterController(UserServiceImpl userService, IReservationService reservationService, IEntertainmentPlaceService entertainmentPlaceService, IEntertainmentActivityService entertainmentActivityService) {
+    public RenterController(UserServiceImpl userService, IReservationService reservationService, IEntertainmentPlaceService entertainmentPlaceService, IEntertainmentActivityService entertainmentActivityService, SecretKey secretKey) {
         this.userService = userService;
         this.reservationService = reservationService;
         this.entertainmentPlaceService = entertainmentPlaceService;
         this.entertainmentActivityService = entertainmentActivityService;
+        this.secretKey = secretKey;
     }
 
     @DeleteMapping("/delete-account")
     private void deleteAccount(@RequestHeader(name = Constants.Authorization) String authorization) {
-        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
-        userService.deleteAccount(token);
+        final String username = RestUtils.getUsernameFromAuthHeaderUsingSecretKey(authorization, secretKey);
+        userService.deleteAccount(username);
     }
 
     @PutMapping("/update-account")
@@ -50,8 +54,8 @@ public class RenterController {
 
     @GetMapping("/all-active-reservations")
     private List<ReservationOutputDTO> findAllActiveReservations(@RequestHeader(name = Constants.Authorization) String authorization) {
-        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
-        return reservationService.findAllActiveReservationsFromRenter(token);
+        final Long userId = RestUtils.getUserDetailsIdFromAuthHeaderUsingSecretKey(authorization, secretKey);
+        return reservationService.findAllActiveReservationsFromRenter(userId);
     }
 
     @GetMapping("/get-all-active-reservations")
@@ -89,7 +93,7 @@ public class RenterController {
 
     @GetMapping("/find-user-details")
     private UserDetailsDTO findUserDetails(@RequestHeader(name = Constants.Authorization) String authorization) {
-        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
-        return userService.findUserDetailsFromToken(token);
+        final Long userId = RestUtils.getUserDetailsIdFromAuthHeaderUsingSecretKey(authorization, secretKey);
+        return userService.findUserByUserId(userId);
     }
 }

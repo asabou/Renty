@@ -7,10 +7,12 @@ import com.mydegree.renty.service.abstracts.IStatisticsService;
 import com.mydegree.renty.service.impl.UserServiceImpl;
 import com.mydegree.renty.service.model.*;
 import com.mydegree.renty.utils.Constants;
+import com.mydegree.renty.utils.RestUtils;
 import com.mydegree.renty.utils.ServicesUtils;
 import com.mydegree.renty.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.SecretKey;
 import java.util.List;
 
 @RestController
@@ -21,16 +23,18 @@ public class OwnerController {
     private final IEntertainmentActivityService entertainmentActivityService;
     private final IReservationService reservationService;
     private final IStatisticsService statisticsService;
+    private final SecretKey secretKey;
 
     public OwnerController(UserServiceImpl userService,
                            IEntertainmentPlaceService entertainmentPlaceService,
                            IEntertainmentActivityService entertainmentActivityService,
-                           IReservationService reservationService, IStatisticsService statisticsService) {
+                           IReservationService reservationService, IStatisticsService statisticsService, SecretKey secretKey) {
         this.userService = userService;
         this.entertainmentPlaceService = entertainmentPlaceService;
         this.entertainmentActivityService = entertainmentActivityService;
         this.reservationService = reservationService;
         this.statisticsService = statisticsService;
+        this.secretKey = secretKey;
     }
 
     @PostMapping("/create-entertainment-place")
@@ -45,14 +49,14 @@ public class OwnerController {
 
     @GetMapping("/all-owned-entertainment-places")
     private List<EntertainmentPlaceDTO> findAllOwnedEntertainmentPlaces(@RequestHeader(name = Constants.Authorization) String authorization) {
-        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
-        return entertainmentPlaceService.findAllOwnedEntertainmentPlaces(token);
+        final Long userId = RestUtils.getUserDetailsIdFromAuthHeaderUsingSecretKey(authorization, secretKey);
+        return entertainmentPlaceService.findAllOwnedEntertainmentPlaces(userId);
     }
 
     @GetMapping("/all-active-reservations-from-owner")
     private List<ReservationOutputDTO> findAllActiveReservationsFromAnOwner(@RequestHeader(name = Constants.Authorization) String authorization) {
-        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
-        return reservationService.findAllActiveReservationsFromAnOwner(token);
+        final Long userId = RestUtils.getUserDetailsIdFromAuthHeaderUsingSecretKey(authorization, secretKey);
+        return reservationService.findAllActiveReservationsFromAnOwner(userId);
     }
 
     @DeleteMapping("/delete-entertainment-place/{id}")
@@ -86,15 +90,15 @@ public class OwnerController {
     @GetMapping("/most-rented-entertainment-activities")
     private List<CustomEntertainmentActivityDTO> getMostRentedEntertainmentActivities(@RequestHeader(name = Constants.Authorization) String authorization,
                                                                                       @RequestParam(required = false) String dateFrom, @RequestParam(required = false) String dateTo) {
-        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
-        return statisticsService.findTopMostRentedEntertainmentActivities(token, dateFrom, dateTo);
+        final Long userId = RestUtils.getUserDetailsIdFromAuthHeaderUsingSecretKey(authorization, secretKey);
+        return statisticsService.findTopMostRentedEntertainmentActivities(userId, dateFrom, dateTo);
     }
 
     @GetMapping("/most-rented-entertainment-places")
     private List<CustomEntertainmentPlaceDTO> getMostRentedEntertainmentPlaces(@RequestHeader(name = Constants.Authorization) String authorization,
                                                                           @RequestParam(required = false) String dateFrom, @RequestParam(required = false) String dateTo) {
-        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
-        return statisticsService.findTopMostRentedEntertainmentPlaces(token, dateFrom, dateTo);
+        final Long userId = RestUtils.getUserDetailsIdFromAuthHeaderUsingSecretKey(authorization, secretKey);
+        return statisticsService.findTopMostRentedEntertainmentPlaces(userId, dateFrom, dateTo);
     }
 
     @GetMapping("/most-rented-reservation-hour")
@@ -102,14 +106,14 @@ public class OwnerController {
                                                                         @RequestParam(required = false) Long placeId,
                                                                         @RequestParam(required = false) String dateFrom,
                                                                         @RequestParam(required = false) String dateTo) {
-        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
-        return statisticsService.findTopMostRentedHourReservations(token, placeId, dateFrom, dateTo);
+        final Long userId = RestUtils.getUserDetailsIdFromAuthHeaderUsingSecretKey(authorization, secretKey);
+        return statisticsService.findTopMostRentedHourReservations(userId, placeId, dateFrom, dateTo);
     }
 
     @GetMapping("/most-rented-reservation-date")
     private List<CustomReservationDateDTO> getMostRentedReservationDate(@RequestHeader(name = Constants.Authorization) String authorization,
                                                                         @RequestParam(required = false) Long placeId) {
-        final String token = TokenUtils.getTokenFromAuthorizationHeader(authorization);
-        return statisticsService.findTopMostRentedDateReservations(token, placeId);
+        final Long userId = RestUtils.getUserDetailsIdFromAuthHeaderUsingSecretKey(authorization, secretKey);
+        return statisticsService.findTopMostRentedDateReservations(userId, placeId);
     }
 }

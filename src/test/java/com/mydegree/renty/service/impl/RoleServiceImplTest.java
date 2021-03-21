@@ -6,6 +6,7 @@ import com.mydegree.renty.service.impl.factories.UserFactory;
 import com.mydegree.renty.service.model.RoleDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 @ActiveProfiles("test")
 class RoleServiceImplTest extends AbstractTest {
+    @InjectMocks
     private RoleServiceImpl roleService;
 
     @Mock
@@ -40,6 +42,6 @@ class RoleServiceImplTest extends AbstractTest {
         verify(roleRepository, times(1)).findAll();
         assertNotNull(roles);
         assertEquals(roles.size(), 3);
-        assertEquals(roles.get(0).getRole(), "admin");
+        assertEquals(roles.get(0).getRole(), "ADMIN");
     }
 }

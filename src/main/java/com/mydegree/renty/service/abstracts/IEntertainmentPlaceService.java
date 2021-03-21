@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IEntertainmentPlaceService {
     List<EntertainmentPlaceDTO> findAllEntertainmentPlaces();
-    List<EntertainmentPlaceDTO> findAllOwnedEntertainmentPlaces(final String token);
+    List<EntertainmentPlaceDTO> findAllOwnedEntertainmentPlaces(final Long userId);
     void saveEntertainmentPlace(final EntertainmentPlaceInputDTO entertainmentPlace);
     void deleteEntertainmentPlaceById(final Long id);
     EntertainmentPlaceDTO findById(final Long id);

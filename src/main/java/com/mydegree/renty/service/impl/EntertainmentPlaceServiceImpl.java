@@ -10,11 +10,9 @@ import com.mydegree.renty.service.model.EntertainmentPlaceDTO;
 import com.mydegree.renty.service.model.EntertainmentPlaceInputDTO;
 import com.mydegree.renty.utils.Constants;
 import com.mydegree.renty.utils.ServicesUtils;
-import com.mydegree.renty.utils.TokenUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +24,6 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
     private final IEntertainmentPlaceRepository entertainmentPlaceRepository;
     private final IAddressRepository addressRepository;
     private final IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository;
-    private final SecretKey secretKey;
 
     public EntertainmentPlaceServiceImpl(IUserRepository userRepository,
                                          IEntertainmentPlaceRepository entertainmentPlaceRepository,
@@ -34,7 +31,6 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
                                          IEntertainmentActivityRepository entertainmentActivityRepository,
                                          IAddressRepository addressRepository,
                                          IEntertainmentActivityPlaceRepository entertainmentActivityPlaceRepository,
-                                         SecretKey secretKey,
                                          IRoleRepository roleRepository,
                                          PasswordEncoder passwordEncoder,
                                          IReservationRepository reservationRepository) {
@@ -42,7 +38,6 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
         this.addressRepository = addressRepository;
         this.entertainmentPlaceRepository = entertainmentPlaceRepository;
         this.entertainmentActivityPlaceRepository = entertainmentActivityPlaceRepository;
-        this.secretKey = secretKey;
     }
 
     @Override
@@ -52,9 +47,9 @@ public class EntertainmentPlaceServiceImpl extends AbstractService implements IE
     }
 
     @Override
-    public List<EntertainmentPlaceDTO> findAllOwnedEntertainmentPlaces(String token) {
+    public List<EntertainmentPlaceDTO> findAllOwnedEntertainmentPlaces(Long userId) {
         final Iterable<EntertainmentPlaceEntity> entities =
-                entertainmentPlaceRepository.findEntertainmentPlaceEntitiesByUserDetailsId(TokenUtils.getUserIdFromTokenUsingSecretKey(token, secretKey));
+                entertainmentPlaceRepository.findEntertainmentPlaceEntitiesByUserDetailsId(userId);
         return EntertainmentPlaceTransformer.transformEntertainmentPlaceEntities(entities);
     }
 

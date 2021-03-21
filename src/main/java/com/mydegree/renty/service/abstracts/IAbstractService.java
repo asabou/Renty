@@ -14,4 +14,7 @@ public interface IAbstractService {
     void throwBadRequestException(final String message);
     void throwNotFoundException(final String message);
     void throwInternalServerErrorException(final String message);
+    boolean userIsAdmin(final Long  userId);
+    boolean userIsOwner(final Long userId);
+    boolean userIdHasRenterRights(final Long userId);
 }
