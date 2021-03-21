@@ -1,7 +1,9 @@
 package com.mydegree.renty.service.impl.factories;
 
 import com.mydegree.renty.dao.entity.RoleEntity;
+import com.mydegree.renty.dao.entity.UserDetailsEntity;
 import com.mydegree.renty.dao.entity.UserEntity;
+import com.mydegree.renty.service.helper.UserDetailsTransformer;
 import com.mydegree.renty.service.helper.UserTransformer;
 import com.mydegree.renty.service.model.UserDetailsDTO;
 import com.mydegree.renty.utils.ServicesUtils;
@@ -42,24 +44,37 @@ public class UserFactory {
     }
 
     public List<RoleEntity> createMockAdminRoles() {
-        return Arrays.asList(createMockRole("admin"), createMockRole("owner"), createMockRole("renter"));
+        return Arrays.asList(createMockRole("ADMIN"), createMockRole("OWNER"), createMockRole("renter"));
     }
 
     public List<RoleEntity> createMockOwnerRoles() {
-        return Arrays.asList(createMockRole("owner"), createMockRole("renter"));
+        return Arrays.asList(createMockRole("OWNER"), createMockRole("RENTER"));
     }
 
     public List<RoleEntity> createMockRenterRoles() {
-        return Arrays.asList(createMockRole("renter"));
+        return Arrays.asList(createMockRole("RENTER"));
     }
 
     public UserDetailsDTO createMockOwnerUserDetailsDTO(final String username) {
-        final UserDetailsDTO userDetailsDTO = new UserDetailsDTO();
+        final UserDetailsDTO userDetailsDTO = UserDetailsTransformer.transformUserDetailsEntity(createSimpleMockUserDetailsEntity(username));
         userDetailsDTO.setUser(UserTransformer.transformUserEntity(createMockUserOwner(username)));
-        userDetailsDTO.setFirstName(username);
-        userDetailsDTO.setLastName(username);
-        userDetailsDTO.setEmail(username + "@gmail.com");
-        userDetailsDTO.setTelNumber("0758866766");
         return userDetailsDTO;
+    }
+
+    public UserDetailsEntity createSimpleMockUserDetailsEntity(final String name) {
+        final UserDetailsEntity entity = new UserDetailsEntity();
+        entity.setFirstName(name);
+        entity.setLastName(name);
+        entity.setEmail(name + "@gmail.com");
+        entity.setTelNumber("0758866769");
+        return entity;
+    }
+
+    public List<UserEntity> createSimpleMockUserEntities() {
+        return Arrays.asList(createSimpleMockUser("alex"));
+    }
+
+    public List<UserDetailsEntity> createSimpleMockUserDetailsEntities() {
+        return Arrays.asList(createSimpleMockUserDetailsEntity("alex"));
     }
 }

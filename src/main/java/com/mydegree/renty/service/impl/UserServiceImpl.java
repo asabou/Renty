@@ -12,27 +12,21 @@ import com.mydegree.renty.service.helper.UserTransformer;
 import com.mydegree.renty.service.model.RoleDTO;
 import com.mydegree.renty.service.model.UserDTO;
 import com.mydegree.renty.service.model.UserDetailsDTO;
-import com.mydegree.renty.utils.ServicesUtils;
-import com.mydegree.renty.utils.TokenUtils;
-import io.jsonwebtoken.Claims;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl extends AbstractService implements IUserService {
-    private final SecretKey secretKey;
     public UserServiceImpl(IUserRepository userRepository,
                            IUserDetailsRepository userDetailsRepository,
                            IRoleRepository roleRepository,
                            IEntertainmentActivityRepository entertainmentActivityRepository,
-                           PasswordEncoder passwordEncoder, SecretKey secretKey,
+                           PasswordEncoder passwordEncoder,
                            IReservationRepository reservationRepository) {
         super(userRepository, userDetailsRepository, roleRepository, entertainmentActivityRepository, passwordEncoder, reservationRepository);
-        this.secretKey = secretKey;
     }
 
     @Override
@@ -114,13 +108,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
     }
 
     @Override
-    public void deleteAccount(String token) {
-        deleteAccountByUsername(TokenUtils.getUsernameFromTokenUsingSecretKey(token, secretKey));
+    public void deleteAccount(String username) {
+        deleteAccountByUsername(username);
     }
-
-    @Override
-    public UserDetailsDTO findUserDetailsFromToken(String token) {
-        return findUserByUserId(TokenUtils.getUserIdFromTokenUsingSecretKey(token, secretKey));
-    }
-
 }

@@ -24,7 +24,7 @@ public class CustomReservationDateTransformer {
     public static List<CustomReservationDateDTO> transformCustomReservationDates(final Iterable<CustomReservationDate> inputs) {
         final List<CustomReservationDateDTO> targets = new ArrayList<>();
         if (inputs != null) {
-            inputs.forEach((entity) -> transformCustomReservationDate(entity));
+            inputs.forEach((entity) -> targets.add(transformCustomReservationDate(entity)));
         }
         return targets;
     }
