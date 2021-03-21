@@ -57,15 +57,10 @@ class StatisticsServiceImplTest extends AbstractTest {
     @Mock
     private IEntertainmentPlaceRepository entertainmentPlaceRepository;
 
-    private UserFactory userFactory;
     private UserEntity mockUserAdmin;
     private UserEntity mockUserOwner;
-    private UserEntity mockUserRenter;
-    private EntertainmentActivityFactory entertainmentActivityFactory;
     private Iterable<CustomEntertainmentActivity> mockCustomEntertainmentActivities;
-    private EntertainmentPlaceFactory entertainmentPlaceFactory;
     private Iterable<CustomEntertainmentPlace> mockCustomEntertainmentPlaces;
-    private ReservationFactory reservationFactory;
     private Iterable<CustomReservationHour> mockCustomReservationHours;
     private Iterable<CustomReservationDate> mockCustomReservationDates;
 
@@ -78,15 +73,14 @@ class StatisticsServiceImplTest extends AbstractTest {
                 passwordEncoder,
                 reservationRepository,
                 entertainmentPlaceRepository);
-        userFactory = new UserFactory();
-        mockUserAdmin = userFactory.createMockUserAdmin("admin");
-        mockUserOwner = userFactory.createMockUserOwner("owner");
-        mockUserRenter = userFactory.createMockUserRenter("renter");
-        entertainmentActivityFactory = new EntertainmentActivityFactory();
+        UserFactory userFactory = new UserFactory();
+        mockUserAdmin = userFactory.createMockUserAdmin("ADMIN");
+        mockUserOwner = userFactory.createMockUserOwner("OWNER");
+        EntertainmentActivityFactory entertainmentActivityFactory = new EntertainmentActivityFactory();
         mockCustomEntertainmentActivities = entertainmentActivityFactory.createMockCustomEntertainmentActivities();
-        entertainmentPlaceFactory = new EntertainmentPlaceFactory();
+        EntertainmentPlaceFactory entertainmentPlaceFactory = new EntertainmentPlaceFactory();
         mockCustomEntertainmentPlaces = entertainmentPlaceFactory.createMockCustomEntertainmentPlaces();
-        reservationFactory = new ReservationFactory();
+        ReservationFactory reservationFactory = new ReservationFactory();
         mockCustomReservationHours = reservationFactory.createMockCustomReservationHours();
         mockCustomReservationDates = reservationFactory.createMockCustomReservationDates();
     }
