@@ -153,7 +153,7 @@ public abstract class AbstractService implements IAbstractService {
     @Override
     public boolean userIsOwner(Long userId) {
         final UserEntity userEntity = findUserEntityById(userId);
-        return userHasRights(userEntity, "OWNER") && !userHasRights(userEntity, "ADMIN");
+        return !userHasRights(userEntity, "ADMIN");
     }
 
     @Override

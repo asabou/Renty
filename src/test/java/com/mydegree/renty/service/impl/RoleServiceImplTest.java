@@ -43,6 +43,5 @@ class RoleServiceImplTest extends AbstractTest {
         assertNotNull(roles);
         assertEquals(roles.size(), 3);
         assertEquals(roles.get(0).getRole(), "ADMIN");
-        assertEquals(roles.get(0).getRole(), "admin");
     }
 }
