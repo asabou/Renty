@@ -4,6 +4,7 @@ import com.mydegree.renty.jwt.*;
 import com.mydegree.renty.service.abstracts.ILoginService;
 import com.mydegree.renty.service.abstracts.IUserService;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -38,6 +39,9 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
         this.secretKey = secretKey;
     }
 
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -65,6 +69,13 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .exceptionHandling()
                 .authenticationEntryPoint(unauthorizedEntryPointHandler()) //for unauthorized entry point (error 401)
                 .accessDeniedHandler(accessDeniedHandler()); //for access denied entry point (error 403)
+
+        if (activeProfile.equals("prod")) {
+            http
+                    .requiresChannel()
+                    .anyRequest()
+                    .requiresSecure();
+        }
     }
 
     @Override
