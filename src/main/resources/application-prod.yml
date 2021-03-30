@@ -23,9 +23,8 @@ stripe:
 server:
   port: 8443
   ssl:
-    key-store-type: PKCS12
-    key-store: src/main/resources/sslcert/renty.p12
+    key-store-type: pkcs12
+    key-store: /home/alexandru/renty/sslcert/renty.p12
     key-store-password: password
     key-alias: renty
     key-password: password
-
