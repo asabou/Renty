@@ -28,4 +28,3 @@ server:
     key-store-password: password
     key-alias: renty
     key-password: password
-
