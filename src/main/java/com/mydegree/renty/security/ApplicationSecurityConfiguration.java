@@ -71,10 +71,10 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .accessDeniedHandler(accessDeniedHandler()); //for access denied entry point (error 403)
 
         if (activeProfile.equals("prod")) {
-            http
-                    .requiresChannel()
-                    .anyRequest()
-                    .requiresSecure();
+//            http
+//                    .requiresChannel()
+//                    .anyRequest()
+//                    .requiresSecure();
         }
     }
 
