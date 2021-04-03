@@ -22,7 +22,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	compile group: 'com.h2database', name: 'h2', version: '1.4.200'
 	compile group: 'com.google.guava', name: 'guava', version: '28.1-jre'
-	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.23'
+	implementation group: 'mysql', name: 'mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
