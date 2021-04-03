@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/proddb?createDatabaseIfNotExist=true&autoReconnect=true
+    url: jdbc:mysql://renty.go.ro:3306/rentyproddb?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&llowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: rentyuser
     password: rentypassword
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
   h2:
     console:
       enabled: false
