@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: ${DB_DATASOURCE_URL}
+    url: jdbc:mysql://renty.go.ro:3306/rentyproddb?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&llowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    username: rentyuser
+    password: rentypassword
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
