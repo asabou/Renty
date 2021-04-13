@@ -4,6 +4,7 @@ plugins {
 	id 'java'
 	id 'jacoco'
 	id 'application'
+	id "org.sonarqube" version "2.8"
 }
 
 group = 'com.mydegree'
@@ -47,8 +48,8 @@ jacoco {
 
 jacocoTestReport {
 	reports {
-		xml.enabled = false
-		csv.enabled = false
+		xml.enabled = true
+		csv.enabled = true
 		html.enabled = true
 	}
 
