@@ -22,7 +22,6 @@ public class ImageBytesUtils {
         } else {
             return inputStream;
         }
-
     }
 
     public byte[] extractBytes() {
@@ -41,16 +40,10 @@ public class ImageBytesUtils {
         return baos.toByteArray();
     }
 
-    public void convertToJpg(byte[] bytes) {
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(filename);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
+    public void convertToJpg(byte[] bytes) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(filename)) {
             fos.write(bytes);
-        } catch (IOException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
